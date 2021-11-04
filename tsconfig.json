@@ -1,18 +1,21 @@
 {
 	"compileOnSave": false,
 	"compilerOptions": {
-		"target": "ES6",
 		"allowJs": true,
-		"strict": true,
-		"module": "CommonJS",
-		"moduleResolution": "Node",
+		"target": "es6",
+		"module": "commonjs",
+		"outDir": "build",
+		"moduleResolution": "node",
+		"removeComments": true,
 		"esModuleInterop": true,
 		"isolatedModules": false,
+		"noImplicitAny": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"experimentalDecorators": true,
 		"skipLibCheck": true,
-		"noEmit": true,
-		"baseUrl": ".",
-		"outDir": "build"
+		"baseUrl": "."
 	},
-	"include": ["./**/*.ts"],
+	"include": ["./"],
 	"exclude": ["node_modules"]
 }
