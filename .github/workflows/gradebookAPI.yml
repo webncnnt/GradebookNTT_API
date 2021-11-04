@@ -19,4 +19,5 @@ jobs:
               with:
                   node-version: ${{matrix.node-version}}
             - run: npm ci
-            - run: pm2 restart --name gradebook-api
+            - run: npm run build
+            - run: pm2 restart gradebook-api

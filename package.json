@@ -16,7 +16,7 @@
 	"main": "server.js",
 	"scripts": {
 		"dev": "nodemon -r tsconfig-paths/register server.ts",
-		"start": "ts-node -r tsconfig-paths/register server.js",
+		"build": "tsc --build",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {

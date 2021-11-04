@@ -11,8 +11,7 @@
 		"skipLibCheck": true,
 		"noEmit": true,
 		"baseUrl": ".",
-		"outDir": "build",
-		"paths": {}
+		"outDir": "build"
 	},
 	"include": ["./**/*.ts"],
 	"exclude": ["node_modules"]
