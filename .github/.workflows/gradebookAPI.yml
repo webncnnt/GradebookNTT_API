@@ -1,0 +1,23 @@
+name: GitHub Actions Demo
+on:
+    push:
+        branches: [main]
+    pull-request:
+        branches: [main]
+jobs:
+    Gradebook-Front-Actions:
+        runs-on: self-hosted
+
+        strategy:
+            matrix:
+                node-version: [14.x]
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: User Node.js ${{matrix.node-version}}
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{matrix.node-version}}
+            - run: npm ci
+            - run: npm run build
+            - run: npm run test --if-present

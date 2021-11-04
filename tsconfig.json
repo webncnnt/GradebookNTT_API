@@ -1,0 +1,19 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"target": "ES6",
+		"allowJs": true,
+		"strict": true,
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"esModuleInterop": true,
+		"isolatedModules": false,
+		"skipLibCheck": true,
+		"noEmit": true,
+		"baseUrl": ".",
+		"outDir": "build",
+		"paths": {}
+	},
+	"include": ["./**/*.ts"],
+	"exclude": ["node_modules"]
+}
