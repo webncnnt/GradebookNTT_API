@@ -22,7 +22,8 @@ jobs:
             - name: Create .env file
               shell: bash
               env:
-                  PORT: ${{secrets.PORT}}
+                  NODE_ENV: ${{ secrets.NODE_ENV }}
+                  PORT: ${{ secrets.PORT }}
                   DB_HOST: ${{ secrets.DB_HOST }}
                   DB_USERNAME: ${{ secrets.DB_USERNAME }}
                   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -31,6 +32,7 @@ jobs:
 
               run: |
                   touch .env
+                  echo NODE_ENV="$NODE_ENV" >> .env
                   echo PORT="$PORT" >> .env
                   echo DB_HOST="$DB_HOST" >> .env
                   echo DB_USERNAME="$DB_USERNAME" >> .env
