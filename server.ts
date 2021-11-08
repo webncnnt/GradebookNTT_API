@@ -1,12 +1,6 @@
-import express from 'express';
 import { config } from 'config';
-
-const app = express();
-
-app.use('/api/dashboard', (req, res, next) => {
-	res.send('<h1>Hello from node</h1>');
-});
+import app from 'app';
 
 app.listen(config.PORT, () => {
-	console.log('Server is listening on port 8000');
+	console.log(`Server is listening on port ${config.PORT}`);
 });
