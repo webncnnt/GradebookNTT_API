@@ -13,9 +13,9 @@ const User = db.define("User", {
   status: sequelize.BOOLEAN // true: block
 });
 
-db.sync()
-.then(()=>{
-    console.log("Create user successfully...")
-})
+// db.sync()
+// .then(()=>{
+//     console.log("Create user successfully...")
+// })
 
 module.exports = User
