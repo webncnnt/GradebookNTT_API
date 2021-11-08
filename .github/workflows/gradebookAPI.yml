@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: Actions for Gradebook Project
 on:
     push:
         branches: [main]
@@ -18,6 +18,16 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: ${{matrix.node-version}}
+
+            - name: Create .env file
+              run: |
+                  touch .env
+                  echo PORT=${{ secrets.PORT }} >> .env
+                  echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+                  echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
+                  echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+                  echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+                  echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+
             - run: npm ci
-            - run: npm run build
-            - run: pm2 restart gradebook-api
+            - run: pm2 startOrRestart ecosystem.config.js --env production
