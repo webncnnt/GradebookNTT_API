@@ -1,9 +1,9 @@
 import { globalErrorHandler } from 'components/globalHandlerError';
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 
-import auth from './src/auth/auth.routes'
+const auth = require('./src/auth/auth.routes');
+
 const app = express();
 
 
@@ -16,10 +16,12 @@ app.use(express.urlencoded({
 }));
 
 app.use('/api/auth', auth)
+
 // app.use('*', (req, res, next) => {
 // 	res.send('Hello');
 // 	next();
 // });
+
 
 app.use(globalErrorHandler);
 
