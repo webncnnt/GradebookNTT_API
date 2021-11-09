@@ -1,6 +1,6 @@
 import { config } from 'config';
 import { ErrorRequestHandler } from 'express';
-import { AppError } from 'ultilities/appError';
+import { AppError } from '@src/utils/appError';
 import { globalErrorHandlerDev } from './globalErrorHandlerDev';
 import { globalErrorHandlerProd } from './globalErrorHandlerProd';
 

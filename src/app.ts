@@ -1,4 +1,4 @@
-import { globalErrorHandler } from 'components/globalHandlerError';
+import { globalErrorHandler } from '@components/globalHandlerError';
 import express from 'express';
 import cors from 'cors';
 

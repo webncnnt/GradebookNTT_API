@@ -1,5 +1,9 @@
-import { config } from 'config';
+import { config } from '@src/config';
 import { Sequelize } from 'sequelize';
+import { classDefiner } from '@src/models/Class';
+import { classInvitationDefiner } from '@src/models/ClassInvitation';
+import { userDefiner } from '@src/models/User';
+import { userClassDefiner } from '@src/models/UserClass';
 
 const database = new Sequelize({
 	database: config.DB_NAME,
@@ -16,6 +20,11 @@ const database = new Sequelize({
 //       rejectUnauthorized: false // <<<<<<< YOU NEED THIS
 //     }
 //   },
+
+classDefiner(database);
+classInvitationDefiner(database);
+userDefiner(database);
+userClassDefiner(database);
 
 database
 	.authenticate()
