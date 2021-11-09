@@ -1,34 +1,28 @@
-import { config } from '@src/config';
-import { Sequelize } from 'sequelize';
-import { classDefiner } from '@src/models/Class';
-import { classInvitationDefiner } from '@src/models/ClassInvitation';
-import { userDefiner } from '@src/models/User';
-import { userClassDefiner } from '@src/models/UserClass';
+import sequelize from '@src/db/sequelize';
+import { Class } from '@src/models/Class';
+import { ClassInvitation } from '@src/models/ClassInvitation';
+import { User } from '@src/models/User';
+import { UserClass } from '@src/models/UserClass';
+import { Model, ModelCtor } from 'sequelize/types';
 
-const database = new Sequelize({
-	database: config.DB_NAME,
-	username: config.DB_USERNAME,
-	password: config.DB_PASSWORD,
-	host: config.DB_HOST,
-	port: config.DB_PORT,
-	dialect: 'postgres'
-});
+const syncModel = (model: ModelCtor<Model<any, any>>) => {
+	model
+		.sync()
+		.then(() => console.log(`Sync ${model.name} successful`))
+		.catch(err => console.log(err));
+};
 
-// dialectOptions: {
-//     ssl: {
-//       require: true,
-//       rejectUnauthorized: false // <<<<<<< YOU NEED THIS
-//     }
-//   },
-
-classDefiner(database);
-classInvitationDefiner(database);
-userDefiner(database);
-userClassDefiner(database);
-
-database
+sequelize
 	.authenticate()
-	.then(() => console.log('Connect database successfully'))
+	.then(() => {
+		console.log('Connect database successfully');
+
+		syncModel(Class);
+		syncModel(ClassInvitation);
+		syncModel(User);
+		syncModel(UserClass);
+	})
 	.catch(e => console.log(e));
 
-export default database;
+const db = sequelize;
+export default db;

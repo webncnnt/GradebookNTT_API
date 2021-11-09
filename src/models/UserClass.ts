@@ -1,8 +1,7 @@
-import { DataTypes, Sequelize } from 'sequelize';
+import sequelize from '@src/db/sequelize';
+import { DataTypes } from 'sequelize';
 
-export const userClassDefiner = (database: Sequelize) => {
-	database.define('UserClass', {
-		userId: DataTypes.INTEGER,
-		classId: DataTypes.INTEGER
-	});
-};
+export const UserClass = sequelize.define('UserClass', {
+	userId: DataTypes.INTEGER,
+	classId: DataTypes.INTEGER
+});
