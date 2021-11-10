@@ -1,4 +1,4 @@
-import { register } from './auth.controllers';
+import { register, login } from './auth.controllers';
 import express from 'express';
 const router = express.Router();
 
@@ -19,6 +19,17 @@ router.post('/register', (req, res, next) => {
 			});
 		}
 	});
+});
+
+router.post('/login', (req, res, next) =>{
+
+	const email = req.body.email;
+	const password = req.body.password;
+
+	login(email,password).then((result) => {
+		res.json(result)
+	})
+	
 });
 
 export default router;
