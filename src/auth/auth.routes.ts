@@ -15,7 +15,7 @@ router.post('/register', (req, res, next) => {
 		} else {
 			res.status(409).json({
 				message: 'Email already exists',
-				status: 201
+			
 			});
 		}
 	});
@@ -27,7 +27,13 @@ router.post('/login', (req, res, next) =>{
 	const password = req.body.password;
 
 	login(email,password).then((result) => {
-		res.json(result)
+		if(result == null){
+			res.status(401).json({
+				message: 'Email or Password is not correct'
+			})
+		}
+		else
+			res.json(result)
 	})
 	
 });
