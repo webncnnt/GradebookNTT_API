@@ -1,6 +1,10 @@
-import { ACCESS_TOKEN_LIFE, ACCESS_TOKEN_SECRET, generateToken } from './auth.method';
+import {
+	ACCESS_TOKEN_LIFE,
+	ACCESS_TOKEN_SECRET,
+	generateToken
+} from './auth.method';
 import { findByEmail } from './users.model';
-import { createUser} from './users.model';
+import { createUser } from './users.model';
 
 import bcrypt from 'bcrypt';
 
@@ -13,7 +17,7 @@ export const register = async (
 ) => {
 	const user = await findByEmail(email);
 
-	if (user[0].length == 0) {
+	if (user == null) {
 		const hashPassword = bcrypt.hashSync(password, SALT_ROUNDS);
 		await createUser(fullname, email, hashPassword);
 
@@ -24,42 +28,36 @@ export const register = async (
 };
 
 export const login = async (email: string, password: string) => {
-	const user = await findByEmail(email);
+	const user: any = await findByEmail(email);
 
-	if (user[0].length == 0) {
+	if (user == null) {
 		return {
 			message: 'Email or Password is not correct',
 			status: 401
 		};
 	} else {
-		const account: any = user[0][0];
-		const hash = account.password;
+		const hash = user.password;
 		const isPasswordValid = bcrypt.compareSync(password, hash);
 
 		if (isPasswordValid) {
-			
 			const accessToken = await generateToken(
-				account,
+				user,
 				ACCESS_TOKEN_SECRET,
 				ACCESS_TOKEN_LIFE
 			);
 
-			console.log(accessToken);
-			if(accessToken != null){
+			if (accessToken != null) {
 				return {
 					message: 'Login successfully.',
-					user: account,
+					user: user,
 					accessToken
 				};
-			}
-			else{
+			} else {
 				return {
 					message: 'Login successfully.',
-					user: account,
-					
+					user: user
 				};
 			}
-			
 		} else {
 			return {
 				message: 'Email or Password is not correct',
