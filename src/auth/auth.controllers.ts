@@ -45,12 +45,21 @@ export const login = async (email: string, password: string) => {
 			);
 
 			console.log(accessToken);
+			if(accessToken != null){
+				return {
+					message: 'Login successfully.',
+					user: account,
+					accessToken
+				};
+			}
+			else{
+				return {
+					message: 'Login successfully.',
+					user: account,
+					
+				};
+			}
 			
-			return {
-				message: 'Login successfully.',
-				user: account,
-				accessToken
-			};
 		} else {
 			return {
 				message: 'Email or Password is not correct',
