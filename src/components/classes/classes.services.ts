@@ -1,11 +1,7 @@
 import { Class } from '@src/models/Class';
-import {
-	CreateClassDto,
-	mergeUpdateClassDtoWithClass,
-	UpdateClassDto
-} from './classes.dto';
 import { nanoid } from 'nanoid';
 import { inject } from 'tsyringe';
+import { CreateClassDto, UpdateClassDto } from './classes.dto';
 
 const INVITE_CODE_LENGTH = 8;
 
@@ -72,7 +68,14 @@ export class ClassesService {
 
 		if (!clz) return null;
 
-		mergeUpdateClassDtoWithClass(clz, updateClassDto);
+		const { className, coverImage, description, expiredTime, teachers } =
+			updateClassDto;
+
+		clz.clsName = className || clz.clsName;
+		clz.coverImage = coverImage || clz.clsName;
+		clz.description = description || clz.description;
+		clz.expiredTime = expiredTime || clz.expiredTime;
+		clz.teachers = teachers || clz.teachers;
 
 		return await clz.save();
 	}

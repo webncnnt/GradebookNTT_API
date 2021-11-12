@@ -12,7 +12,12 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(cookieParser());
 
-app.use(cors());
+app.use(
+	cors({
+		origin: ['http://localhost:3000', 'http://locahost:8000'],
+		credentials: true
+	})
+);
 
 app.use('/api/auth', router);
 
