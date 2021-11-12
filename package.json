@@ -34,6 +34,7 @@
 	"main": "server.js",
 	"scripts": {
 		"dev": "nodemon -r tsconfig-paths/register src/server.ts",
+		"build": "tsc --build",
 		"start": "ts-node -r tsconfig-paths/register src/server.ts",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
