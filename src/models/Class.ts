@@ -47,7 +47,7 @@ export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
 Class.init(
 	{
 		id: {
-			type: DataTypes.INTEGER.UNSIGNED,
+			type: DataTypes.INTEGER,
 			autoIncrement: true,
 			primaryKey: true
 		},
@@ -69,11 +69,11 @@ Class.init(
 			unique: true
 		},
 		ownerId: {
-			type: DataTypes.NUMBER,
+			type: DataTypes.INTEGER,
 			allowNull: false
 		},
 		teachers: {
-			type: DataTypes.ARRAY(DataTypes.NUMBER),
+			type: DataTypes.ARRAY(DataTypes.INTEGER),
 			allowNull: true
 		},
 		status: {
@@ -81,7 +81,10 @@ Class.init(
 			allowNull: false,
 			defaultValue: false
 		}, // true: block
-		createdDate: DataTypes.NOW,
+		createdDate: {
+			type: DataTypes.DATE,
+			defaultValue: DataTypes.NOW
+		},
 		expiredTime: {
 			type: DataTypes.DATE,
 			allowNull: true
@@ -91,7 +94,7 @@ Class.init(
 			allowNull: true
 		}
 	},
-	{ sequelize }
+	{ tableName: 'classes', sequelize }
 );
 
 Class.belongsTo(User, { foreignKey: 'ownerId', targetKey: 'id' });
