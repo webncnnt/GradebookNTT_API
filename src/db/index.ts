@@ -19,7 +19,7 @@ export const connectDatabase = async () => {
 	console.log('Connect database successfully');
 
 	await Promise.all([
-		syncModel(Class),
+		Class.sync(),
 		syncModel(ClassInvitation),
 		syncModel(User),
 		syncModel(UserClass)
