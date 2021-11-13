@@ -1,10 +1,10 @@
 import { QueryTypes } from 'sequelize';
 import { config } from 'config';
-import { connectDatabase } from 'db';
+import { connectDatabase} from 'db';
 import app from 'app';
 
 connectDatabase().then(() => {
-	console.log('Setup database successful');
+	console.log('Setup database successfully');
 });
 
 app.listen(config.PORT, () => {
