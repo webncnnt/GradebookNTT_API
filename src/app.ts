@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 
 import router from './auth/auth.routes';
 import { isAuth } from './auth/auth.middleware';
+import profileRouter from './components/profile/profile.route';
 
 const app = express();
 
@@ -26,11 +27,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use('/api/auth', router);
+app.use('/api/profile', isAuth, profileRouter);
 
 //test about  validation of access token
-app.use('/api/profile', isAuth, async (req: any, res) => {
-	res.send(req.user);
-});
+// app.use('/api/profile', isAuth, async (req: any, res) => {
+// 	res.send(req.user);
+// });
 
 // app.use('*', (req, res, next) => {
 // 	res.send('Hello');
