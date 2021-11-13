@@ -21,7 +21,7 @@ router.post('/register', (req, res, next) => {
 	});
 });
 
-router.post('/login', (req, res, next) =>{
+router.post('/login', (req: any, res: any, next: any) =>{
 
 	const email = req.body.email;
 	const password = req.body.password;
@@ -32,8 +32,11 @@ router.post('/login', (req, res, next) =>{
 				message: 'Email or Password is not correct'
 			})
 		}
-		else
-			res.json(result)
+		else{
+			req.user = result.user;
+			res.json(result);
+		}
+			
 	})
 	
 });
