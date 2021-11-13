@@ -1,5 +1,5 @@
 import { globalErrorHandler } from '@components/globalHandlerError';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -18,6 +18,12 @@ app.use(
 		credentials: true
 	})
 );
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+	next();
+});
 
 app.use('/api/auth', router);
 
