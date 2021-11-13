@@ -17,8 +17,10 @@
 		"baseUrl": "src",
 		"paths": {
 			"@src/*": ["./*"],
+			"@constant/*": ["./constant*"],
 			"@components/*": ["./components/*"]
-		}
+		},
+		"typeRoots": ["@types", "./node_modules/@types"]
 	},
 	"include": ["./"],
 	"exclude": ["node_modules", "build/**/*"]
