@@ -1,10 +1,11 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { AppError } from './appError';
 
 type AsyncRequestHandler = (
 	req: Request,
 	res: Response,
 	next: NextFunction
-) => Promise<void>;
+) => Promise<AppError | void>;
 
 export const catchAsyncRequestHandler = (
 	fn: AsyncRequestHandler
