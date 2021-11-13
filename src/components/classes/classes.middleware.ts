@@ -7,7 +7,7 @@ export const validateIdParamsExist: RequestHandler = (req, res, next) => {
 	const id = +req.params.id;
 
 	if (!id)
-		throw new AppError(
+		return new AppError(
 			HttpStatusCode.BAD_REQUEST,
 			ClassesMessageError.INVALID_CLASS_ID
 		);

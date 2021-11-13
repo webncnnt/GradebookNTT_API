@@ -1,6 +1,5 @@
 import { Class } from '@src/models/Class';
 import { nanoid } from 'nanoid';
-import { inject } from 'tsyringe';
 import { CreateClassDto, UpdateClassDto } from './classes.dto';
 
 const INVITE_CODE_LENGTH = 8;
@@ -10,10 +9,7 @@ const generateInviteCode = (): string => {
 };
 
 export class ClassesService {
-	constructor(
-		@inject('classesRepository')
-		private readonly classesRepository: typeof Class
-	) {}
+	constructor(private readonly classesRepository: typeof Class) {}
 
 	async create(
 		ownerId: number,
@@ -39,7 +35,7 @@ export class ClassesService {
 			ownerId
 		});
 
-		return await this.classesRepository.build(clz).save();
+		return await clz.save();
 	}
 
 	async getClassById(id: number): Promise<Class | null> {
@@ -56,11 +52,11 @@ export class ClassesService {
 
 	async getAllActiveClassWhereUserId(id: number): Promise<Class[]> {
 		return await this.classesRepository.findAll({
-			where: { ownerId: id, status: 0, delectedAt: null }
+			where: { ownerId: id, status: 0 }
 		});
 	}
 
-	async update(
+	async updateById(
 		id: number,
 		updateClassDto: UpdateClassDto
 	): Promise<Class | null> {
@@ -85,7 +81,6 @@ export class ClassesService {
 
 		if (!clz) return null;
 
-		clz.deletedAt = new Date();
 		clz.status = true;
 
 		try {

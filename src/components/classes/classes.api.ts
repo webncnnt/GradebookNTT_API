@@ -1,21 +1,24 @@
+import { Class } from '@src/models/Class';
 import { Router } from 'express';
-import { container } from 'tsyringe';
 import { ClassesController } from './classes.controller';
 import { validateIdParamsExist } from './classes.middleware';
+import { ClassesService } from './classes.services';
 
 const router = Router();
 
-const classesController: ClassesController =
-	container.resolve('classesController');
+const classesService = new ClassesService(Class);
+const classesController = new ClassesController(classesService);
 
-router.post('/', classesController.create);
+router
+	.route('/')
+	.get(classesController.getAllActiveClasses)
+	.post(classesController.create);
 
-router.get('/:id', validateIdParamsExist, classesController.getClassById);
-
-router.patch('/:id', validateIdParamsExist, classesController.updateById);
-
-router.delete('/:id', validateIdParamsExist, classesController.deleteById);
-
-router.get('/', classesController.getAllActiveClasses);
+router
+	.use(validateIdParamsExist)
+	.route('/:id')
+	.get(classesController.getClassById)
+	.patch(validateIdParamsExist, classesController.updateById)
+	.delete(validateIdParamsExist, classesController.deleteById);
 
 export default router;

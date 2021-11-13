@@ -16,7 +16,7 @@ export type ResponseClassDto = {
 	description?: string;
 	inviteCode: string;
 	ownerId: number;
-	expiredTime: Date;
+	expiredTime: Date | null;
 };
 
 export const classToResponseDtoConverter = (clz: Class): ResponseClassDto => ({

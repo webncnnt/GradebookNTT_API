@@ -2,41 +2,41 @@ import { catchAsyncRequestHandler } from '@src/utils/catchAsyncRequestHandler';
 import { AppError } from '@src/utils/appError';
 
 import { ClassesService } from './classes.services';
-import { ClassesMessageError } from './classes.constant';
+import { ClassesMessageError, ClassesMessageSuccess } from './classes.constant';
 import {
 	classToResponseDtoConverter,
 	CreateClassDto,
 	ResponseClassDto,
-	ResponseClassesDto
+	UpdateClassDto
 } from './classes.dto';
 
 import { HttpStatusCode } from '@src/constant/httpStatusCode';
 import { AuthorizeMessageError } from '@src/constant/authorizeError';
 import { NextFunction, Request, Response } from 'express';
-import { inject } from 'tsyringe';
 
 export class ClassesController {
-	constructor(
-		@inject('classesService')
-		private readonly classesService: ClassesService
-	) {}
+	private readonly classesService: ClassesService;
+
+	constructor(classesService: ClassesService) {
+		this.classesService = classesService;
+	}
 
 	create = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
 			const createClassDto = req.body as CreateClassDto;
 
-			if (!createClassDto)
-				throw new AppError(
-					HttpStatusCode.BAD_REQUEST,
-					ClassesMessageError.NOT_ENOUGH_INFOR_CREATE_CLASS
+			if (!req.user)
+				return new AppError(
+					HttpStatusCode.UNAUTHORIZED,
+					AuthorizeMessageError.UNAUTHORIZED
 				);
 
 			const ownerId = req.user.getId();
 
-			if (!ownerId)
-				throw new AppError(
-					HttpStatusCode.UNAUTHORIZED,
-					AuthorizeMessageError.UNAUTHORIZED
+			if (!createClassDto)
+				return new AppError(
+					HttpStatusCode.BAD_REQUEST,
+					ClassesMessageError.NOT_ENOUGH_INFORMATION_CREATE_CLASS
 				);
 
 			const clz = await this.classesService.create(
@@ -46,24 +46,29 @@ export class ClassesController {
 
 			const clzResponse = classToResponseDtoConverter(clz);
 
-			res.status(HttpStatusCode.OK).json(clzResponse);
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				message: ClassesMessageSuccess.SUCCESS_CREATE_CLASS,
+				data: clzResponse
+			});
 		}
 	);
 
 	getAllActiveClasses = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
-			const classes = await this.classesService.getAllClasses();
+			const classes = await this.classesService!.getAllClasses();
 
-			const classesResponse: ResponseClassDto[] = classes.map(clz =>
+			const classesResponseDto: ResponseClassDto[] = classes.map(clz =>
 				classToResponseDtoConverter(clz)
 			);
 
-			const classesResponseDto: ResponseClassesDto = {
-				length: classesResponse.length,
-				classes: classesResponse
-			};
-
-			res.status(HttpStatusCode.OK).json(classesResponseDto);
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				data: {
+					length: classesResponseDto.length,
+					classes: classesResponseDto
+				}
+			});
 		}
 	);
 
@@ -71,19 +76,77 @@ export class ClassesController {
 		async (req: Request, res: Response, next: NextFunction) => {
 			const id = +req.params.id;
 
-			if (!id)
-				throw new AppError(
-					HttpStatusCode.BAD_REQUEST,
-					ClassesMessageError.INVALID_CLASS_ID
-				);
-
 			const clz = await this.classesService.getClassById(id);
 
 			if (!clz)
-				throw new AppError(
+				return new AppError(
 					HttpStatusCode.NOT_FOUND,
 					ClassesMessageError.CLASS_NOT_EXISTS
 				);
+
+			const clzResponse: ResponseClassDto =
+				classToResponseDtoConverter(clz);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				data: { class: clzResponse }
+			});
+		}
+	);
+
+	updateById = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const updateClassDto = req.body as UpdateClassDto;
+
+			const id = +req.params.id;
+
+			if (!updateClassDto)
+				return new AppError(
+					HttpStatusCode.BAD_REQUEST,
+					ClassesMessageError.NOT_ENOUGH_INFORMATION_UPDATE_CLASS
+				);
+
+			const clz = await this.classesService.updateById(
+				id,
+				updateClassDto
+			);
+
+			if (!clz)
+				return new AppError(
+					HttpStatusCode.NOT_FOUND,
+					ClassesMessageError.CLASS_NOT_EXISTS
+				);
+
+			const clzResponse: ResponseClassDto =
+				classToResponseDtoConverter(clz);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				data: { class: clzResponse }
+			});
+		}
+	);
+
+	deleteById = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const id = +req.params.id;
+
+			const clz = await this.classesService.deleteById(id);
+
+			if (!clz)
+				return new AppError(
+					HttpStatusCode.NOT_FOUND,
+					ClassesMessageError.CLASS_NOT_EXISTS
+				);
+
+			const clzResponse: ResponseClassDto =
+				classToResponseDtoConverter(clz);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				message: ClassesMessageSuccess.SUCCESS_DELETE_CLASS,
+				data: { class: clzResponse }
+			});
 		}
 	);
 }
