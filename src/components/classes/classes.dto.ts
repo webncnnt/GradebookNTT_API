@@ -19,11 +19,6 @@ export type ResponseClassDto = {
 	expiredTime: Date;
 };
 
-export type ResponseClassesDto = {
-	length: number;
-	classes: ResponseClassDto[];
-};
-
 export const classToResponseDtoConverter = (clz: Class): ResponseClassDto => ({
 	classname: clz.clsName,
 	coverImage: clz.coverImage,
