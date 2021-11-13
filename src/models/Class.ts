@@ -14,7 +14,6 @@ interface ClassAttributes {
 	status: boolean; // true: block
 	createdDate: Date;
 	expiredTime: Date;
-	delectedAt: Date;
 }
 
 interface ClassCreationAttributes
@@ -27,7 +26,6 @@ interface ClassCreationAttributes
 		| 'coverImage'
 		| 'description'
 		| 'teachers'
-		| 'delectedAt'
 	> {}
 
 export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
@@ -41,7 +39,6 @@ export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
 	createdDate!: Date;
 	teachers!: number[];
 	expiredTime!: Date;
-	deletedAt!: Date;
 }
 
 Class.init(
@@ -86,10 +83,6 @@ Class.init(
 			defaultValue: DataTypes.NOW
 		},
 		expiredTime: {
-			type: DataTypes.DATE,
-			allowNull: true
-		},
-		delectedAt: {
 			type: DataTypes.DATE,
 			allowNull: true
 		}
