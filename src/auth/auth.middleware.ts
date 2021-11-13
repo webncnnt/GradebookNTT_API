@@ -10,7 +10,7 @@ export const isAuth = async (req: any, res: any, next: any) => {
 	if (!accessTokenFromHeader) {
 		return res.status(401).json({
             message: "accessToken isn't valid!",
-            status: 401
+           
         });
 	}
 
@@ -25,7 +25,7 @@ export const isAuth = async (req: any, res: any, next: any) => {
 			.status(401)
 			.json({
                 message: "accessToken is invalid or expired!",
-                status: 401
+               
             });
 	}
 

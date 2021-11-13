@@ -31,10 +31,12 @@ export const login = async (email: string, password: string) => {
 	const user: any = await findByEmail(email);
 
 	if (user == null) {
-		return {
-			message: 'Email or Password is not correct',
-			status: 401
-		};
+
+		return null;
+		// return {
+		// 	message: 'Email or Password is not correct',
+		// 	status: 401
+		// };
 	} else {
 		const hash = user.password;
 		const isPasswordValid = bcrypt.compareSync(password, hash);
@@ -59,10 +61,11 @@ export const login = async (email: string, password: string) => {
 				};
 			}
 		} else {
-			return {
-				message: 'Email or Password is not correct',
-				status: 401
-			};
+			// return {
+			// 	message: 'Email or Password is not correct',
+			// 	status: 401
+			// };
+			return null;
 		}
 	}
 };
