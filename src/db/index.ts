@@ -24,7 +24,7 @@ export const connectDatabase = async (
 	if (!sync) return;
 
 	await Promise.all([
-		Class.sync({ force: true }),
+		Class.sync({ force }),
 		syncModel(ClassInvitation),
 		syncModel(User),
 		syncModel(UserClass)

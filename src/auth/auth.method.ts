@@ -1,5 +1,5 @@
 export const ACCESS_TOKEN_SECRET = 'Access_Token_Secret';
-export const ACCESS_TOKEN_LIFE = '15m';
+export const ACCESS_TOKEN_LIFE = '30m';
 
 const jwt = require('jsonwebtoken');
 const promisify = require('util').promisify;

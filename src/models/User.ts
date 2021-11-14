@@ -8,5 +8,9 @@ export const User = sequelize.define('User', {
 	role: DataTypes.INTEGER,
 	studentId: DataTypes.STRING,
 	avatar: DataTypes.STRING,
-	status: DataTypes.BOOLEAN // true: block
+	status: DataTypes.BOOLEAN,// true: block
+	dob: DataTypes.DATE,
+	address: DataTypes.STRING,
+	numberPhone: DataTypes.STRING,
+	facebook: DataTypes.STRING
 });
