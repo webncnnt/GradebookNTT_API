@@ -1,5 +1,7 @@
-import { findUserById } from './../../auth/users.model';
-import bcrypt from 'bcrypt';
+import {
+	findUserById,
+	findUserByStudentIdAndUserId
+} from './../../auth/users.model';
 
 const SALT_ROUNDS = 10;
 
@@ -21,6 +23,13 @@ export const updateProfile = async (
 ) => {
 	const user: any = await findUserById(userId);
 
+	if (studentId != null) {
+		const isExist = await findUserByStudentIdAndUserId(userId, studentId);
+
+		if (isExist != null) {
+			return null;
+		}
+	}
 	await user.update({
 		fullname: fullname,
 		studentId: studentId,

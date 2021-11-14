@@ -24,10 +24,18 @@ profileRouter.put('/:id', (req, res, next) => {
 		facebook
 	)
 		.then(updatedUser => {
-            res.json({
-                message: 'Update successfully!',
-                profile: updatedUser
-            })
+			if(updatedUser == null){
+				res.status(409).json({
+					message: 'MSSV already exist!'
+				})
+			}
+			else{
+				res.json({
+					message: 'Update successfully!',
+					profile: updatedUser
+				})
+			}
+            
         })
 		.catch(err => {
 
