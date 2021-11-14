@@ -1,0 +1,29 @@
+[
+	{
+		"fullname": "Nguyen Duc Minh Tri",
+		"email": "trminh36@gmail.com",
+		"password": "123456789",
+		"role": 0,
+		"studentId": "12345678",
+		"avatar": "images/avatar.jpg",
+		"status": false
+	},
+	{
+		"fullname": "Ho Hoang Viet Tien",
+		"email": "vtien2000@gmail.com",
+		"password": "123456789",
+		"role": 0,
+		"studentId": "12345678",
+		"avatar": "images/avatar.jpg",
+		"status": false
+	},
+	{
+		"fullname": "Huynh Thi Nhi",
+		"email": "tnhi2000@gmail.com",
+		"password": "123456789",
+		"role": 0,
+		"studentId": "12345678",
+		"avatar": "images/avatar.jpg",
+		"status": false
+	}
+]

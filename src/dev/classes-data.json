@@ -1,0 +1,34 @@
+[
+	{
+		"clsName": "WebNC",
+		"coverImage": "images/avatar.jpg",
+		"description": "sjdhjsdh jdhdf",
+		"inviteCode": "124545A",
+		"ownerId": 1,
+		"expiredTime": "12/08/2022"
+	},
+	{
+		"clsName": "PTQLYCPM",
+		"coverImage": "images/avatar.jpg",
+		"description": "sjdhjsdh jdhdf",
+		"inviteCode": "454545A",
+		"ownerId": 1,
+		"expiredTime": "12/9/2023"
+	},
+	{
+		"clsName": "Web",
+		"coverImage": "images/avatar.jpg",
+		"description": "web description",
+		"inviteCode": "343445A",
+		"ownerId": 2,
+		"expiredTime": "12/12/2022"
+	},
+	{
+		"clsName": "TKPM",
+		"coverImage": "images/avatar.jpg",
+		"description": "tkpm description",
+		"inviteCode": "df1a234",
+		"ownerId": 3,
+		"expiredTime": "12/08/2022"
+	}
+]
