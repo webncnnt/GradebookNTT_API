@@ -1,9 +1,8 @@
-import { QueryTypes } from 'sequelize';
 import { config } from 'config';
 import { connectDatabase } from 'db';
 import app from 'app';
 
-connectDatabase().then(() => {
+connectDatabase(true, false).then(() => {
 	console.log('Setup database successful');
 });
 

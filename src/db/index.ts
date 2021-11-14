@@ -14,14 +14,17 @@ const syncModel = (model: ModelCtor<Model<any, any>>) => {
 		.catch(err => console.log(err));
 };
 
-export const connectDatabase = async (sync: boolean = false) => {
+export const connectDatabase = async (
+	sync: boolean = false,
+	force: boolean = false
+) => {
 	await sequelize.authenticate();
 	console.log('Connect database successfully');
 
 	if (!sync) return;
 
 	await Promise.all([
-		Class.sync(),
+		Class.sync({ force: true }),
 		syncModel(ClassInvitation),
 		syncModel(User),
 		syncModel(UserClass)
