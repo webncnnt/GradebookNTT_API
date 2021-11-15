@@ -6,14 +6,15 @@ import { User } from './User';
 interface ClassAttributes {
 	id: number;
 	clsName: string;
-	coverImage: string;
-	description: string;
+	coverImage: string | null;
+	description: string | null;
 	inviteCode: string;
 	ownerId: number;
-	teachers: number[];
+	teachers: number[] | null;
+	students: number[] | null;
 	status: boolean; // true: block
 	createdDate: Date;
-	expiredTime: Date;
+	expiredTime: Date | null;
 }
 
 interface ClassCreationAttributes
@@ -25,20 +26,22 @@ interface ClassCreationAttributes
 		| 'expiredTime'
 		| 'coverImage'
 		| 'description'
+		| 'students'
 		| 'teachers'
 	> {}
 
 export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
 	id!: number;
 	clsName!: string;
-	coverImage!: string;
-	description!: string;
+	coverImage!: string | null;
+	description!: string | null;
 	inviteCode!: string;
 	ownerId!: number;
 	status!: boolean; // true: block
 	createdDate!: Date;
-	teachers!: number[];
-	expiredTime!: Date;
+	students!: number[] | null;
+	teachers!: number[] | null;
+	expiredTime!: Date | null;
 }
 
 Class.init(
@@ -50,7 +53,14 @@ Class.init(
 		},
 		clsName: {
 			type: new DataTypes.STRING(128),
-			allowNull: false
+			allowNull: false,
+			validate: {
+				min: { args: [3], msg: 'Your class name is too short' },
+				max: {
+					args: [128],
+					msg: 'Your class name length must less than 128 characters'
+				}
+			}
 		},
 		coverImage: {
 			type: DataTypes.STRING,
@@ -68,6 +78,10 @@ Class.init(
 		ownerId: {
 			type: DataTypes.INTEGER,
 			allowNull: false
+		},
+		students: {
+			type: DataTypes.ARRAY(DataTypes.INTEGER),
+			allowNull: true
 		},
 		teachers: {
 			type: DataTypes.ARRAY(DataTypes.INTEGER),
