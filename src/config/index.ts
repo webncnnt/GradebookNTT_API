@@ -9,5 +9,9 @@ export const config = {
 	DB_USERNAME: process.env.DB_USERNAME,
 	DB_PASSWORD: process.env.DB_PASSWORD,
 	DB_NAME: process.env.DB_NAME,
-	DB_PORT: process.env.DB_PORT ? +process.env.DB_PORT : 5432
+	DB_PORT: process.env.DB_PORT ? +process.env.DB_PORT : 5432,
+	CLOUDINARY_FOLDER_AVATAR: process.env.CLOUDINARY_FOLDER_AVATAR!,
+	CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!,
+	CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!,
+	CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!
 };
