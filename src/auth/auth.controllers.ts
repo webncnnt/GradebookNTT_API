@@ -3,7 +3,7 @@ import {
 	ACCESS_TOKEN_SECRET,
 	generateToken
 } from './auth.method';
-import { findByEmail } from './users.model';
+import { findByEmail, findUserById } from './users.model';
 import { createUser } from './users.model';
 
 import bcrypt from 'bcrypt';
@@ -31,7 +31,6 @@ export const login = async (email: string, password: string) => {
 	const user: any = await findByEmail(email);
 
 	if (user == null) {
-
 		return null;
 		// return {
 		// 	message: 'Email or Password is not correct',
@@ -69,3 +68,21 @@ export const login = async (email: string, password: string) => {
 		}
 	}
 };
+
+
+export const changePassWord = async (userId: number, newPws: string)=>{
+
+	const user: any = await findUserById(userId);
+	const hashPassword = bcrypt.hashSync(newPws, SALT_ROUNDS);
+
+	if(user != null){
+		await user.update({
+			password: hashPassword
+		})
+
+		return true;
+	}
+	
+	return false;
+
+}
