@@ -38,7 +38,7 @@ router.post('/login', (req: any, res: any, next: any) => {
 
 router.post('/changePwd/:id', (req, res, next) => {
 	const id = req.params.id;
-	const newPass = req.body.password;
+	const newPass = req.body.newPass;
 
 	changePassWord(parseInt(id), newPass)
 		.then(result => {
