@@ -1,3 +1,4 @@
+import { findUserById } from './users.model';
 import { register, login, changePassWord } from './auth.controllers';
 import express from 'express';
 const router = express.Router();
@@ -39,8 +40,10 @@ router.post('/login', (req: any, res: any, next: any) => {
 router.post('/changePwd/:id', (req, res, next) => {
 	const id = req.params.id;
 	const newPass = req.body.newPass;
+	const oldPass = req.body.oldPass;
 
-	changePassWord(parseInt(id), newPass)
+
+	changePassWord(parseInt(id), oldPass, newPass)
 		.then(result => {
 			if(result){
 
@@ -50,7 +53,7 @@ router.post('/changePwd/:id', (req, res, next) => {
 			}
 			else{
 				res.status(400).json({
-					message: 'Bad Request!'
+					message: `New password does not match the old password!`
 				});
 			}
 		

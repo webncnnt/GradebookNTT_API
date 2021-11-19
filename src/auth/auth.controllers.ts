@@ -70,18 +70,26 @@ export const login = async (email: string, password: string) => {
 };
 
 
-export const changePassWord = async (userId: number, newPws: string)=>{
+export const changePassWord = async (userId: number,oldPass: string,  newPws: string)=>{
 
 	const user: any = await findUserById(userId);
-	const hashPassword = bcrypt.hashSync(newPws, SALT_ROUNDS);
+	const hash = user.password;
+	
+	const isPasswordValid = bcrypt.compareSync(oldPass, hash);
 
-	if(user != null){
-		await user.update({
-			password: hashPassword
-		})
+	if(isPasswordValid){
 
-		return true;
+		const hashPassword = bcrypt.hashSync(newPws, SALT_ROUNDS);
+
+		if(user != null){
+			await user.update({
+				password: hashPassword
+			})
+	
+			return true;
+		}
 	}
+
 	
 	return false;
 
