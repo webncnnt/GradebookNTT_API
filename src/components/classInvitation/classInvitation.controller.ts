@@ -57,7 +57,7 @@ export class ClassInvitationController {
 			const inviteCode = req.params.inviteCode;
 			if (!inviteCode) throw new IllegalArgumentError('');
 
-			const userId = req.user!.getId();
+			const userId = req.user!.id;
 
 			const invitationAcceptedDto =
 				await this.classInvitationServices.joinToClassByInviteCode(
@@ -83,7 +83,7 @@ export class ClassInvitationController {
 			await this.classInvitationServices.joinToClassByAccessToken(
 				classId,
 				role,
-				req.user!.getEmail()
+				req.user!.email
 			);
 
 			res.status(HttpStatusCode.OK).json({
