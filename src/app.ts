@@ -8,6 +8,9 @@ import { isAuth } from './auth/auth.middleware';
 import profileRouter from './components/profile/profile.route';
 
 import classesRouter from '@components/classes';
+import classInvitationRouter from '@components/classInvitation';
+import usercontentRouter from '@components/usercontent';
+
 const app = express();
 
 app.use(express.json());
@@ -30,6 +33,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 const API_PREFIX = '/api';
 
 app.use(`${API_PREFIX}/classes`, classesRouter);
+
+app.use(`${API_PREFIX}/invites`, classInvitationRouter);
+
+app.use(`${API_PREFIX}/upload`, usercontentRouter);
 
 app.use('/api/auth', router);
 app.use('/api/profile', isAuth, profileRouter);
