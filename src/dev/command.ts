@@ -13,6 +13,7 @@ export function commandDevData<M extends Model>(
 ) {
 	const arrData = JSON.parse(fs.readFileSync(jsonFilePath).toString());
 
+	console.log(arrData);
 	const importData = async () => {
 		try {
 			const modelsInstanceCreated = await model.bulkCreate(arrData);
