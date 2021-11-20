@@ -5,6 +5,8 @@ export class ClassesMessageError {
 		'Information is not enough to create class';
 	static readonly NOT_ENOUGH_INFORMATION_UPDATE_CLASS =
 		'Invalid information in one or more fields. check your class information';
+	static readonly NOT_ENOUGH_INFORMATION_UPDATE_MEMBER_CLASS =
+		'Invalid information, check members id';
 }
 
 export class ClassesMessageSuccess {
@@ -12,3 +14,5 @@ export class ClassesMessageSuccess {
 	static readonly SUCCESS_UPDATE_CLASS = 'Class is updated successfully';
 	static readonly SUCCESS_DELETE_CLASS = 'Class is deleted successfully';
 }
+
+export const USER_CLASS_PER_PAGE = 10;
