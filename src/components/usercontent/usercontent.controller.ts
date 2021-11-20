@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { uploadOneMediaFile } from '@components/uploadMediaServices';
-import { AppError } from '@src/utils/appError';
+import { AppError, IllegalArgumentError } from '@src/utils/appError';
 import { HttpStatusCode } from '@src/constant/httpStatusCode';
 import { config } from '@src/config';
 
@@ -17,16 +17,12 @@ export const uploadAvatarImage = async (
 	next: NextFunction
 ) => {
 	if (!req.file)
-		return new AppError(
-			HttpStatusCode.BAD_REQUEST,
+		throw new IllegalArgumentError(
 			K.UserContentMessage.FILE_EMPTY_IN_REQUEST_ERROR
 		);
 
 	if (!validateImageType(req.file.mimetype, K.VALID_IMAGE_TYPES)) {
-		return new AppError(
-			HttpStatusCode.BAD_REQUEST,
-			K.UserContentMessage.INVALID_IMAGE_TYPE
-		);
+		throw new IllegalArgumentError(K.UserContentMessage.INVALID_IMAGE_TYPE);
 	}
 
 	const apiRes = await uploadOneMediaFile(
