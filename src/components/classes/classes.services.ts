@@ -1,97 +1,235 @@
-import { Class } from '@src/models/Class';
+import { Class, ClassStatus } from '@src/models/Class';
+import { ClassInvitation } from '@src/models/ClassInvitation';
+import { User } from '@src/models/User';
+import { RoleUserInClass, UserClass } from '@src/models/UserClass';
+import { IllegalArgumentError, NotFoundError } from '@src/utils/appError';
 import { nanoid } from 'nanoid';
-import { CreateClassDto, UpdateClassDto } from './classes.dto';
-
-const INVITE_CODE_LENGTH = 8;
-
-const generateInviteCode = (): string => {
-	return nanoid(INVITE_CODE_LENGTH);
-};
+import { Op } from 'sequelize';
+import { ClassInvitationInput } from '../classInvitation/classInvitation.dto';
+import { ClassesMessageError, USER_CLASS_PER_PAGE } from './classes.constant';
+import {
+	ClassMembersOverviewDto,
+	ClassOverviewDto,
+	CreateClassInput,
+	mapClassToClassOverviewDto,
+	mapUsersToUsersOverviewDto,
+	UpdateClassInput
+} from './classes.dto';
 
 export class ClassesService {
-	constructor(private readonly classesRepository: typeof Class) {}
+	constructor(
+		private readonly classesRepository: typeof Class,
+		private readonly usersRepository: typeof User,
+		private readonly classInvitationsRepository: typeof ClassInvitation,
+		private readonly userClassesRepository: typeof UserClass
+	) {}
 
 	async create(
 		ownerId: number,
-		createClassDto: CreateClassDto
-	): Promise<Class> {
-		const {
-			className,
-			coverImage,
-			description,
-			expiredTime,
-			teachers = [ownerId]
-		} = createClassDto;
+		createClassInput: CreateClassInput
+	): Promise<ClassOverviewDto> {
+		const { className, coverImage, description, expiredTime } =
+			createClassInput;
 
-		const inviteCode = generateInviteCode();
+		const inviteCode = createInviteCode();
 
-		const clz = new Class({
+		const clz = await Class.create({
 			clsName: className,
 			coverImage,
 			description,
 			expiredTime,
-			teachers,
-			inviteCode,
-			ownerId
+			inviteCode
 		});
 
-		return await clz.save();
-	}
+		await clz.setOwner(ownerId);
 
-	async getClassById(id: number): Promise<Class | null> {
-		return await this.classesRepository.findOne({ where: { id } });
-	}
-
-	async getAllClasses(): Promise<Class[]> {
-		return await this.classesRepository.findAll();
-	}
-
-	async getAllClassWhereUserId(id: number): Promise<Class[]> {
-		return await this.classesRepository.findAll({ where: { ownerId: id } });
-	}
-
-	async getAllActiveClassWhereUserId(id: number): Promise<Class[]> {
-		return await this.classesRepository.findAll({
-			where: { ownerId: id, status: 0 }
+		await this.userClassesRepository.create({
+			classId: clz.id,
+			userId: ownerId,
+			role: RoleUserInClass.TEACHER
 		});
+
+		return mapClassToClassOverviewDto(clz);
 	}
 
-	async updateById(
+	async findAndCountAllClassOverviewsWithUserIdByPage(
+		userId: number,
+		page: number
+	): Promise<[ClassOverviewDto[], number]> {
+		const classes = await this.classesRepository.findAll({
+			where: {
+				[Op.or]: {
+					ownerId: userId,
+					'$members.id$': userId
+				}
+			},
+			include: [
+				{
+					model: this.usersRepository,
+					as: 'members',
+					duplicating: false
+				}
+			],
+			limit: 5,
+			offset: page - 1
+		});
+
+		const count = await this.classesRepository.count();
+
+		const classOverviewsDto = classes.map(clz =>
+			mapClassToClassOverviewDto(clz)
+		);
+
+		return [classOverviewsDto, count];
+	}
+
+	async findAllMemberOverviewsByClassId(
+		classId: number
+	): Promise<ClassMembersOverviewDto> {
+		const clazz = await this.classesRepository.findByPk(classId);
+
+		if (!clazz)
+			throw new NotFoundError(ClassesMessageError.CLASS_NOT_EXISTS);
+
+		const members = await clazz.getMembers();
+
+		const teachers = members.filter(
+			m => m.role === RoleUserInClass.TEACHER
+		);
+
+		const students = members.filter(
+			m => m.role === RoleUserInClass.STUDENT
+		);
+
+		const teacherOverviewsDto = mapUsersToUsersOverviewDto(teachers);
+		const studentOverviewsDto = mapUsersToUsersOverviewDto(students);
+
+		return {
+			id: classId,
+			className: clazz.clsName,
+			students: studentOverviewsDto,
+			teachers: teacherOverviewsDto
+		};
+	}
+
+	async updateClassById(
 		id: number,
-		updateClassDto: UpdateClassDto
-	): Promise<Class | null> {
-		const clz = await this.getClassById(id);
+		updateClassDto: UpdateClassInput
+	): Promise<void> {
+		const clazz = await this.classesRepository.findByPk(id);
 
-		if (!clz) return null;
+		if (!clazz)
+			throw new NotFoundError(ClassesMessageError.CLASS_NOT_EXISTS);
 
-		const { className, coverImage, description, expiredTime, teachers } =
+		const { className, coverImage, description, expiredTime } =
 			updateClassDto;
 
-		clz.clsName = className || clz.clsName;
-		clz.coverImage = coverImage || clz.clsName;
-		clz.description = description || clz.description;
-		clz.expiredTime = expiredTime || clz.expiredTime;
-		clz.teachers = teachers || clz.teachers;
+		clazz.clsName = className || clazz.clsName;
+		clazz.coverImage = coverImage || clazz.clsName;
+		clazz.description = description || clazz.description;
+		clazz.expiredTime = expiredTime || clazz.expiredTime;
 
-		return await clz.save();
+		await clazz.save();
 	}
 
-	async deleteById(id: number): Promise<Class | null> {
-		const clz = await this.getClassById(id);
-
-		if (!clz) return null;
-
-		clz.status = true;
-
-		try {
-			await clz.destroy();
-			return clz;
-		} catch (err) {
-			return null;
-		}
+	async leftClass(
+		userId: number,
+		classId: number,
+		role: number
+	): Promise<void> {
+		await this.verifyUserExistsInClass(userId, classId, role);
+		await this.userClassesRepository.destroy({
+			where: { userId, classId, role }
+		});
 	}
 
-	async deleteAll(): Promise<number> {
-		return await this.classesRepository.destroy();
+	async removeMembersByClassId(
+		id: number,
+		userIds: number[],
+		role: RoleUserInClass
+	): Promise<void> {
+		const clazz = await this.classesRepository.findByPk(id);
+
+		if (!clazz)
+			throw new NotFoundError(ClassesMessageError.CLASS_NOT_EXISTS);
+
+		await this.userClassesRepository.destroy({
+			where: { id: userIds, role }
+		});
 	}
+
+	async deleteById(id: number): Promise<void> {
+		const clazz = await this.classesRepository.findByPk(id);
+
+		if (!clazz)
+			throw new NotFoundError(ClassesMessageError.CLASS_NOT_EXISTS);
+
+		clazz.status = ClassStatus.DELETED;
+		clazz.deletedAt = new Date();
+
+		await clazz.save();
+	}
+
+	async createInvitation(
+		classId: number,
+		invitationInput: ClassInvitationInput
+	): Promise<void> {
+		const invitation =
+			await this.classInvitationsRepository.findClassInvitationByClassIdAndRoleAndEmail(
+				classId,
+				invitationInput.role,
+				invitationInput.email
+			);
+
+		if (invitation) throw new IllegalArgumentError('Invitation is existed');
+
+		const newInvitation = await this.classInvitationsRepository.create({
+			email: invitationInput.email,
+			role: invitationInput.role
+		});
+
+		await newInvitation.setClass(classId);
+	}
+
+	async deleteInvitationById(invitationId: number) {
+		const invitation = await this.classInvitationsRepository.findByPk(
+			invitationId
+		);
+
+		await invitation?.destroy();
+	}
+
+	async findAllInvitationsByClassId(
+		classId: number
+	): Promise<ClassInvitation[]> {
+		const clazz = await this.classesRepository.findByPk(classId);
+
+		if (!clazz) throw new NotFoundError('');
+
+		return await clazz!.getInvitations();
+	}
+
+	private async verifyUserExistsInClass(
+		userId: number,
+		classId: number,
+		role: RoleUserInClass
+	) {
+		const clazz = await this.classesRepository.findByPk(classId);
+		if (!clazz)
+			throw new NotFoundError(ClassesMessageError.CLASS_NOT_EXISTS);
+
+		const user = await this.usersRepository.findByPk(userId);
+		if (!user) throw new NotFoundError('User is not existed');
+
+		const userInClasses = await this.userClassesRepository.findAll({
+			where: { userId, classId, role }
+		});
+
+		if (userInClasses.length >= 1)
+			throw new IllegalArgumentError('User is already existed in class');
+	}
+}
+
+function createInviteCode() {
+	return nanoid(8);
 }

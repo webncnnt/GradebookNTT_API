@@ -1,16 +1,53 @@
-import { RequestHandler } from 'express';
-import { AppError } from '@src/utils/appError';
-import { ClassesMessageError } from './classes.constant';
-import { HttpStatusCode } from '@src/constant/httpStatusCode';
+import { Class } from '@src/models/Class';
+import { RoleUserInClass, UserClass } from '@src/models/UserClass';
+import { UnauthorizedError } from '@src/utils/appError';
+import { catchAsyncRequestHandler } from '@src/utils/catchAsyncRequestHandler';
+import { NextFunction, Request, Response } from 'express';
 
-export const validateIdParamsExist: RequestHandler = (req, res, next) => {
-	const id = +req.params.id;
+export const protect = catchAsyncRequestHandler(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const userId = req.user?.id;
 
-	if (!id)
-		return new AppError(
-			HttpStatusCode.BAD_REQUEST,
-			ClassesMessageError.INVALID_CLASS_ID
+		if (!userId)
+			throw new UnauthorizedError(
+				'You do not have permission to perform this action'
+			);
+
+		const classId = +req.params.id;
+
+		const clazz = await Class.findByPk(classId);
+		const owner = await clazz?.getOwner();
+
+		if (owner?.id === userId) req.user?.roles.push('owner');
+
+		const members = await UserClass.findAll({ where: { id: userId } });
+		members?.forEach(m => {
+			if (m.role === RoleUserInClass.STUDENT)
+				req.user!.roles.push('student');
+
+			if (m.role === RoleUserInClass.TEACHER)
+				req.user!.roles.push('teacher');
+		});
+
+		next();
+	}
+);
+
+export const restrictTo = (...roles: string[]) => {
+	return (req: Request, res: Response, next: NextFunction) => {
+		const hasPermission = req.user?.roles.some(role =>
+			roles.includes(role)
 		);
 
-	next();
+		if (hasPermission) next();
+
+		if (!hasPermission)
+			next(
+				new UnauthorizedError(
+					'You do not have permission to perform this action'
+				)
+			);
+	};
 };
+
+export default { restrictTo, protect };

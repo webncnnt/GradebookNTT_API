@@ -6,7 +6,11 @@
 		"role": 0,
 		"studentId": "12345678",
 		"avatar": "images/avatar.jpg",
-		"status": false
+		"status": false,
+		"dob": null,
+		"address": "cay cach",
+		"numberPhone": "0807545145",
+		"facebook": "facebook.com"
 	},
 	{
 		"fullname": "Ho Hoang Viet Tien",
@@ -15,7 +19,11 @@
 		"role": 0,
 		"studentId": "12345678",
 		"avatar": "images/avatar.jpg",
-		"status": false
+		"status": false,
+		"dob": "01/01/2000",
+		"address": "cay cach",
+		"numberPhone": "0807545145",
+		"facebook": "facebook.com"
 	},
 	{
 		"fullname": "Huynh Thi Nhi",
@@ -24,6 +32,10 @@
 		"role": 0,
 		"studentId": "12345678",
 		"avatar": "images/avatar.jpg",
-		"status": false
+		"status": false,
+		"dob": "01/01/2000",
+		"address": "cay cach",
+		"numberPhone": "0807545145",
+		"facebook": "facebook.com"
 	}
 ]

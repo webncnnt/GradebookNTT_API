@@ -2,15 +2,13 @@
 declare global {
 	namespace Express {
 		interface UserDetails {
-			getId: () => number;
-			getUsername: () => string;
-			getPassword: () => string;
-			getRoles: () => string[];
-			isAccountBlock: () => boolean;
+			id: number;
+			email: string;
+			roles: string[];
+			isBlock: boolean;
 		}
-
 		interface Request {
-			user: UserDetails;
+			user?: UserDetails;
 		}
 	}
 }

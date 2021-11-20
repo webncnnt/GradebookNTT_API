@@ -1,20 +1,26 @@
 import { ErrorRequestHandler } from 'express';
-import { AppError } from '@src/utils/appError';
+import { IllegalArgumentError, NotFoundError } from '@src/utils/appError';
+import { HttpStatusCode } from '@src/constant/httpStatusCode';
 
 export const globalErrorHandlerProd: ErrorRequestHandler = (
-	err: AppError,
+	err: Error,
 	req,
-	res
+	res,
+	next
 ) => {
-	if (err.isOperational) {
-		return res.status(err.statusCode).json({
+	if (err instanceof NotFoundError) {
+		return res.status(HttpStatusCode.NOT_FOUND).json({
 			message: err.message
 		});
 	}
 
-	if (!err.isOperational) {
-		return res.status(500).json({
-			message: 'Something went wrong'
+	if (err instanceof IllegalArgumentError) {
+		return res.status(HttpStatusCode.BAD_REQUEST).json({
+			message: err.message
 		});
 	}
+
+	return res.status(500).json({
+		message: 'Something went wrong'
+	});
 };

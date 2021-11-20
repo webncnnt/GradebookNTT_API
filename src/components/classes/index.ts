@@ -1,6 +1,5 @@
-import { Class } from '@src/models/Class';
+import { isAuth } from '@src/auth/auth.middleware';
 import { Router } from 'express';
-import { ClassesService } from './classes.services';
 import apiRouter from './classes.api';
 
 const router = Router();
@@ -8,12 +7,12 @@ const router = Router();
 router.use(
 	'/',
 	(req, res, next) => {
+		// just for testing
 		req.user = {
-			getId: () => 1,
-			getPassword: () => '121212',
-			getRoles: () => [],
-			getUsername: () => 'owns',
-			isAccountBlock: () => false
+			id: 1,
+			email: 'dfdf',
+			roles: [],
+			isBlock: false
 		};
 
 		next();

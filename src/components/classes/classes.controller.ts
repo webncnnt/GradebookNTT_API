@@ -1,18 +1,20 @@
 import { catchAsyncRequestHandler } from '@src/utils/catchAsyncRequestHandler';
-import { AppError } from '@src/utils/appError';
+import {
+	AppError,
+	IllegalArgumentError,
+	UnauthorizedError
+} from '@src/utils/appError';
 
 import { ClassesService } from './classes.services';
 import { ClassesMessageError, ClassesMessageSuccess } from './classes.constant';
-import {
-	classToResponseDtoConverter,
-	CreateClassDto,
-	ResponseClassDto,
-	UpdateClassDto
-} from './classes.dto';
+import { CreateClassInput, UpdateClassInput } from './classes.dto';
 
 import { HttpStatusCode } from '@src/constant/httpStatusCode';
+import { HEADER_COUNT } from '@src/constant/headerConstants';
 import { AuthorizeMessageError } from '@src/constant/authorizeError';
 import { NextFunction, Request, Response } from 'express';
+import { RoleUserInClass } from '@src/models/UserClass';
+import { ClassInvitationInput } from '../classInvitation/classInvitation.dto';
 
 export class ClassesController {
 	private readonly classesService: ClassesService;
@@ -23,106 +25,158 @@ export class ClassesController {
 
 	create = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
-			const createClassDto = req.body as CreateClassDto;
+			const createClassInput = req.body as CreateClassInput;
 
-			if (!req.user)
-				return new AppError(
-					HttpStatusCode.UNAUTHORIZED,
-					AuthorizeMessageError.UNAUTHORIZED
-				);
-
-			const ownerId = req.user.getId();
-
-			if (!createClassDto)
-				return new AppError(
-					HttpStatusCode.BAD_REQUEST,
+			if (!createClassInput)
+				throw new IllegalArgumentError(
 					ClassesMessageError.NOT_ENOUGH_INFORMATION_CREATE_CLASS
 				);
 
-			const clz = await this.classesService.create(
+			const ownerId = req.user!.id;
+
+			const clzDto = await this.classesService.create(
 				ownerId,
-				createClassDto
+				createClassInput
 			);
 
-			const clzResponse = classToResponseDtoConverter(clz);
-
-			res.status(HttpStatusCode.OK).json({
+			res.status(HttpStatusCode.CREATED).json({
 				status: 'success',
 				message: ClassesMessageSuccess.SUCCESS_CREATE_CLASS,
-				data: clzResponse
+				data: clzDto
 			});
 		}
 	);
 
-	getAllActiveClasses = catchAsyncRequestHandler(
+	createInvitation = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
-			const classes = await this.classesService!.getAllClasses();
+			const classId = +req.params.id;
+			const invitationInput = req.body as ClassInvitationInput;
 
-			const classesResponseDto: ResponseClassDto[] = classes.map(clz =>
-				classToResponseDtoConverter(clz)
+			await this.classesService.createInvitation(
+				classId,
+				invitationInput
+			);
+
+			console.log('in create invitation');
+			// send email
+
+			res.status(HttpStatusCode.CREATED);
+		}
+	);
+
+	deleteInvitation = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const invitationId = +req.params.invitationId;
+
+			await this.classesService.deleteInvitationById(invitationId);
+		}
+	);
+
+	getAllInvitationsByClassId = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const classId = +req.params.classId;
+
+			await this.classesService.findAllInvitationsByClassId(classId);
+		}
+	);
+
+	getAllClassesByUserId = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const userId = +req.user!.id;
+			const page = req.query.page ? +req.query.page : 1;
+
+			console.log(page);
+
+			const [classesDto, totalClasses] =
+				await this.classesService!.findAndCountAllClassOverviewsWithUserIdByPage(
+					userId,
+					page
+				);
+
+			res.status(HttpStatusCode.OK)
+				.header(HEADER_COUNT, totalClasses.toString())
+				.json({
+					status: 'success',
+					data: classesDto
+				});
+		}
+	);
+
+	getClassDetailById = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {}
+	);
+
+	getSortInformationMembersInClass = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const classId = +req.params.id;
+
+			console.log(classId);
+			console.log('get sort information');
+			const clzDto =
+				await this.classesService.findAllMemberOverviewsByClassId(
+					classId
+				);
+
+			res.status(200).json({ status: 'success', data: clzDto });
+		}
+	);
+
+	leftClass = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const userId = req.user?.id;
+			const classId = +req.params.id;
+			const role = +req.query;
+
+			if (!userId)
+				throw new UnauthorizedError(AuthorizeMessageError.UNAUTHORIZED);
+
+			await this.classesService.leftClass(userId, classId, role);
+		}
+	);
+
+	// Todo: teacher id == owner id => not delete
+	removeMembers = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const classId = +req.params.id;
+			const role = req.query.role ? +req.query.role : undefined;
+			const memberIds = (req.query.id as string)
+				?.split(',')
+				.map(id => +id);
+
+			if (!memberIds || !role)
+				throw new IllegalArgumentError('Invalid role or member id');
+
+			await this.classesService.removeMembersByClassId(
+				classId,
+				memberIds,
+				role
 			);
 
 			res.status(HttpStatusCode.OK).json({
 				status: 'success',
-				data: {
-					length: classesResponseDto.length,
-					classes: classesResponseDto
-				}
-			});
-		}
-	);
-
-	getClassById = catchAsyncRequestHandler(
-		async (req: Request, res: Response, next: NextFunction) => {
-			const id = +req.params.id;
-
-			const clz = await this.classesService.getClassById(id);
-
-			if (!clz)
-				return new AppError(
-					HttpStatusCode.NOT_FOUND,
-					ClassesMessageError.CLASS_NOT_EXISTS
-				);
-
-			const clzResponse: ResponseClassDto =
-				classToResponseDtoConverter(clz);
-
-			res.status(HttpStatusCode.OK).json({
-				status: 'success',
-				data: { class: clzResponse }
+				message: 'Remove members successfully'
 			});
 		}
 	);
 
 	updateById = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
-			const updateClassDto = req.body as UpdateClassDto;
+			const classId = +req.params.id;
+			const updateClassInput = req.body as UpdateClassInput;
 
-			const id = +req.params.id;
-
-			if (!updateClassDto)
-				return new AppError(
-					HttpStatusCode.BAD_REQUEST,
+			if (!updateClassInput)
+				throw new IllegalArgumentError(
 					ClassesMessageError.NOT_ENOUGH_INFORMATION_UPDATE_CLASS
 				);
 
-			const clz = await this.classesService.updateById(
-				id,
-				updateClassDto
+			await this.classesService.updateClassById(
+				classId,
+				updateClassInput
 			);
-
-			if (!clz)
-				return new AppError(
-					HttpStatusCode.NOT_FOUND,
-					ClassesMessageError.CLASS_NOT_EXISTS
-				);
-
-			const clzResponse: ResponseClassDto =
-				classToResponseDtoConverter(clz);
 
 			res.status(HttpStatusCode.OK).json({
 				status: 'success',
-				data: { class: clzResponse }
+				message: ClassesMessageSuccess.SUCCESS_UPDATE_CLASS
 			});
 		}
 	);
@@ -131,21 +185,11 @@ export class ClassesController {
 		async (req: Request, res: Response, next: NextFunction) => {
 			const id = +req.params.id;
 
-			const clz = await this.classesService.deleteById(id);
-
-			if (!clz)
-				return new AppError(
-					HttpStatusCode.NOT_FOUND,
-					ClassesMessageError.CLASS_NOT_EXISTS
-				);
-
-			const clzResponse: ResponseClassDto =
-				classToResponseDtoConverter(clz);
+			await this.classesService.deleteById(id);
 
 			res.status(HttpStatusCode.OK).json({
 				status: 'success',
-				message: ClassesMessageSuccess.SUCCESS_DELETE_CLASS,
-				data: { class: clzResponse }
+				message: ClassesMessageSuccess.SUCCESS_DELETE_CLASS
 			});
 		}
 	);
