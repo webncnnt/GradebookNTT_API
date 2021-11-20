@@ -30,11 +30,6 @@ export const register = async (
 export const login = async (email: string, password: string) => {
 	const user: any = await findByEmail(email);
 
-<<<<<<< HEAD
-	console.log(user);
-
-=======
->>>>>>> 69b4d1fabf7e0e5c34d2241b2ac2d5a5d6ef5215
 	if (user == null) {
 		return null;
 		// return {
@@ -75,28 +70,27 @@ export const login = async (email: string, password: string) => {
 	}
 };
 
-
-export const changePassWord = async (userId: number,oldPass: string,  newPws: string)=>{
-
+export const changePassWord = async (
+	userId: number,
+	oldPass: string,
+	newPws: string
+) => {
 	const user: any = await findUserById(userId);
 	const hash = user.password;
-	
+
 	const isPasswordValid = bcrypt.compareSync(oldPass, hash);
 
-	if(isPasswordValid){
-
+	if (isPasswordValid) {
 		const hashPassword = bcrypt.hashSync(newPws, SALT_ROUNDS);
 
-		if(user != null){
+		if (user != null) {
 			await user.update({
 				password: hashPassword
-			})
-	
+			});
+
 			return true;
 		}
 	}
 
-	
 	return false;
-
-}
+};
