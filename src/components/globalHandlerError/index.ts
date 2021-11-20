@@ -5,15 +5,14 @@ import { globalErrorHandlerDev } from './globalErrorHandlerDev';
 import { globalErrorHandlerProd } from './globalErrorHandlerProd';
 
 export const globalErrorHandler: ErrorRequestHandler = (
-	err: AppError,
+	err: Error,
 	req,
-	res
+	res,
+	next
 ) => {
-	if (config.NODE_ENV === 'development') {
-		return globalErrorHandlerDev;
+	if (config.NODE_ENV === 'production') {
+		globalErrorHandlerProd(err, req, res, next);
 	}
 
-	if (config.NODE_ENV === 'production') {
-		return globalErrorHandlerProd;
-	}
+	return globalErrorHandlerDev(err, req, res, next);
 };
