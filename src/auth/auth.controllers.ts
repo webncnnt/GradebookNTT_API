@@ -30,8 +30,9 @@ export const register = async (
 export const login = async (email: string, password: string) => {
 	const user: any = await findByEmail(email);
 
-	if (user == null) {
+	console.log(user);
 
+	if (user == null) {
 		return null;
 		// return {
 		// 	message: 'Email or Password is not correct',
@@ -41,6 +42,7 @@ export const login = async (email: string, password: string) => {
 		const hash = user.password;
 		const isPasswordValid = bcrypt.compareSync(password, hash);
 
+		console.log(isPasswordValid);
 		if (isPasswordValid) {
 			const accessToken = await generateToken(
 				user,
