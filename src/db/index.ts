@@ -3,16 +3,6 @@ import { Class } from '@src/models/Class';
 import { ClassInvitation } from '@src/models/ClassInvitation';
 import { User } from '@src/models/User';
 import { UserClass } from '@src/models/UserClass';
-import { Model, ModelCtor } from 'sequelize/types';
-
-const syncModel = (model: ModelCtor<Model<any, any>>) => {
-	return model
-		.sync()
-		.then(() => {
-			console.log(`Sync ${model.name} successful`);
-		})
-		.catch(err => console.log(err));
-};
 
 export const connectDatabase = async (
 	sync: boolean = false,
@@ -23,12 +13,12 @@ export const connectDatabase = async (
 
 	if (!sync) return;
 
-	await Promise.all([
-		Class.sync({ force }),
-		syncModel(ClassInvitation),
-		syncModel(User),
-		syncModel(UserClass)
-	]);
+	await Class.sync({ force });
+	await User.sync({ force });
+	await UserClass.sync({ force });
+	await ClassInvitation.sync({ force });
+
+	console.log('Sync tables successfully');
 };
 
 const db = sequelize;
