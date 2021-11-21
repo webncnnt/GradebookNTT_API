@@ -1,7 +1,8 @@
 export type ClassInvitationDto = {
 	id?: number;
 	inviteCode: string;
-	roleInvite?: number;
+	roleInvite: number;
+	email?: string;
 	classInformation: {
 		id: number;
 		className: string;

@@ -2,7 +2,6 @@ import { HttpStatusCode } from '@src/constant/httpStatusCode';
 import { IllegalArgumentError, NotFoundError } from '@src/utils/appError';
 import { catchAsyncRequestHandler } from '@src/utils/catchAsyncRequestHandler';
 import { Request, Response, NextFunction } from 'express';
-import { ClassInvitationInput } from './classInvitation.dto';
 import { ClassInvitationServices } from './classInvitation.services';
 
 export class ClassInvitationController {
@@ -14,35 +13,39 @@ export class ClassInvitationController {
 		async (req: Request, res: Response, next: NextFunction) => {
 			const inviteCode = req.params.inviteCode;
 
-			const classInvitationDto =
+			const classInvitation =
 				await this.classInvitationServices.findInvitationByInviteCode(
 					inviteCode
 				);
 
 			res.status(HttpStatusCode.OK).json({
 				status: 'success',
-				data: classInvitationDto
+				message: 'Invitation email is sent successfully'
 			});
 		}
 	);
 
 	getInvitationByAccessToken = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
-			const classId = req.params.classId;
+			const inviteCode = req.params.inviteCode;
 			const role = req.query.role ? +req.query.role : undefined;
-			const token = req.query.token ? `${req.query.token}` : undefined;
+			const email = req.user?.email;
 
 			if (!role)
-				throw new IllegalArgumentError('Cannot find any invitations');
+				throw new IllegalArgumentError(
+					`Cannot find any invitations with role code: ${role}`
+				);
 
-			if (!token)
-				throw new IllegalArgumentError('Cannot find any invitations');
+			if (!email)
+				throw new IllegalArgumentError(
+					`Cannot find any invitations with email: ${email}`
+				);
 
 			const classInvitationDto =
 				await this.classInvitationServices.findInvitationByClassIdWithRoleAndEmail(
-					classId,
+					inviteCode,
 					role,
-					token
+					email
 				);
 
 			res.status(HttpStatusCode.OK).json({
@@ -74,21 +77,20 @@ export class ClassInvitationController {
 
 	acceptInvitationByAccessToken = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
-			const classId = req.params.classId;
+			const inviteCode = req.params.inviteCode;
 			const role = req.query.role ? +req.query.role : undefined;
 
 			if (!role)
 				throw new IllegalArgumentError('Cannot find any invitations');
 
 			await this.classInvitationServices.joinToClassByAccessToken(
-				classId,
+				inviteCode,
 				role,
-				req.user!.email
+				req.user!.id
 			);
 
 			res.status(HttpStatusCode.OK).json({
-				status: 'success',
-				data: { id: classId }
+				status: 'success'
 			});
 		}
 	);
