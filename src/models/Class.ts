@@ -11,7 +11,8 @@ import {
 	BelongsToManyRemoveAssociationsMixin,
 	HasManyAddAssociationMixin,
 	HasManyRemoveAssociationMixin,
-	BelongsToCreateAssociationMixin
+	BelongsToCreateAssociationMixin,
+	BelongsToManyCountAssociationsMixin
 } from 'sequelize';
 import { BelongsToSetAssociationMixin } from 'sequelize';
 import { HasManySetAssociationsMixin } from 'sequelize';
@@ -70,6 +71,7 @@ export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
 	getOwner!: BelongsToGetAssociationMixin<User>;
 	setOwner!: BelongsToSetAssociationMixin<User, number>;
 
+	countMembers!: BelongsToManyCountAssociationsMixin;
 	getMembers!: BelongsToManyGetAssociationsMixin<User>;
 	setMembers!: BelongsToManySetAssociationsMixin<User, number>;
 	addMembers!: BelongsToManyAddAssociationsMixin<User, number>;
@@ -95,6 +97,19 @@ export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
 		return await clz.getMembers({ where: { id: userId } });
 	}
 
+	async findClassInvitationByRoleAndEmail(
+		role: number,
+		email: string
+	): Promise<ClassInvitation | null> {
+		const invitations = await this.getInvitations({
+			where: { role, email }
+		});
+
+		if (invitations.length !== 1) return null;
+
+		return invitations[0];
+	}
+
 	static async findClassByInviteCode(
 		inviteCode: string
 	): Promise<Class | null> {
@@ -113,18 +128,11 @@ export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
 		});
 	}
 
-	static async countOccurOfMemberInClassWithUserIdAndRole(
-		classId: number,
-		userId: number,
-		role: number
-	): Promise<number> {
-		return await Class.count({
-			include: {
-				model: User,
-				as: 'members',
-				where: { userId, classId, role }
-			}
-		});
+	static async existByClassId(id: number): Promise<boolean> {
+		const clz = await Class.findByPk(id);
+
+		if (!clz) return false;
+		return true;
 	}
 }
 

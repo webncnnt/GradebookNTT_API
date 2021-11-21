@@ -27,6 +27,14 @@ export class UserClass extends Model<
 	id!: number;
 	role!: RoleUserInClass;
 	joinDate!: Date;
+
+	static async countOccurOfMemberInClassWithUserIdAndRole(
+		classId: number,
+		userId: number,
+		role: number
+	): Promise<number> {
+		return this.count({ where: { classId, userId, role } });
+	}
 }
 
 UserClass.init(

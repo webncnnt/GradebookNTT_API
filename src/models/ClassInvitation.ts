@@ -1,4 +1,6 @@
 import sequelize from '@src/db/sequelize';
+import { Class } from './Class';
+import { RoleUserInClass } from './UserClass';
 import {
 	BelongsToGetAssociationMixin,
 	BelongsToSetAssociationMixin,
@@ -6,55 +8,50 @@ import {
 	Model,
 	Optional
 } from 'sequelize';
-import { Class } from './Class';
-import { RoleUserInClass } from './UserClass';
 
 interface ClassInvitationAttributes {
 	id: number;
+	classId: number;
 	email: string;
 	role: RoleUserInClass;
 }
 
 interface ClassInvitationCreationAttributes
-	extends Optional<ClassInvitationAttributes, 'id' | 'role'> {}
+	extends Optional<ClassInvitationAttributes, 'id' | 'role' | 'classId'> {}
 
 export class ClassInvitation extends Model<
 	ClassInvitationAttributes,
 	ClassInvitationCreationAttributes
 > {
 	id!: number;
+	classId!: number;
 	email!: string;
 	role!: RoleUserInClass;
 
 	getClass!: BelongsToGetAssociationMixin<Class>;
 	setClass!: BelongsToSetAssociationMixin<Class, number>;
 
-	static async findClassInvitationByClassInviteCodeAndRoleAndEmail(
-		inviteCode: string,
-		role: number,
-		email: string
-	): Promise<ClassInvitation | null> {
-		return await ClassInvitation.findOne({
-			include: { model: Class, as: 'class', where: { inviteCode } },
-			where: { role, email }
+	static async existsByClassIdAndEmailAndRole(
+		classId: number,
+		email: string,
+		role: number
+	): Promise<boolean> {
+		const invitation = await ClassInvitation.findOne({
+			where: { classId, email, role }
 		});
-	}
 
-	static async findClassInvitationByClassIdAndRoleAndEmail(
-		id: number,
-		role: number,
-		email: string
-	): Promise<ClassInvitation | null> {
-		return await ClassInvitation.findOne({
-			include: { model: Class, as: 'class', where: { id } },
-			where: { role, email }
-		});
+		if (invitation) return true;
+		return false;
 	}
 }
 
 ClassInvitation.init(
 	{
 		id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+		classId: {
+			type: DataTypes.INTEGER,
+			references: { model: Class, key: 'id' }
+		},
 		email: {
 			type: DataTypes.STRING,
 			allowNull: false
