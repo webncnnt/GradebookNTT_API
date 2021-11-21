@@ -8,18 +8,73 @@ import {
 import { Class, ClassStatus } from '@src/models/Class';
 import { User } from '@src/models/User';
 import { RoleUserInClass, UserClass } from '@src/models/UserClass';
+import { config } from '@src/config';
+import { ClassInvitationChecker } from './classesInvitation.checker';
+import { ClassesChecker } from '../classes/classes.checker';
 
 export class ClassInvitationServices {
 	constructor(
 		private readonly classInvitationRepository: typeof ClassInvitation,
 		private readonly userRepository: typeof User,
-		private readonly classRepository: typeof Class
+		private readonly classRepository: typeof Class,
+		private readonly classInvitationChecker: ClassInvitationChecker,
+		private readonly classesChecker: ClassesChecker
 	) {}
+
+	async createInvitation(
+		classId: number,
+		invitationInput: ClassInvitationInput
+	): Promise<ClassInvitation> {
+		await this.classesChecker.checkExistClassById(classId);
+
+		const clazz = await this.classRepository.findByPk(classId);
+
+		const invitation = await clazz!.findClassInvitationByRoleAndEmail(
+			invitationInput.role,
+			invitationInput.email
+		);
+
+		if (invitation) throw new IllegalArgumentError('Invitation is existed');
+
+		const newInvitation = await this.classInvitationRepository.create({
+			email: invitationInput.email,
+			classId: classId,
+			role: invitationInput.role
+		});
+
+		return newInvitation;
+	}
+
+	async deleteInvitationById(invitationId: number) {
+		const invitation = await this.classInvitationRepository.findByPk(
+			invitationId
+		);
+
+		await invitation?.destroy();
+	}
+
+	async findAllInvitationsByClassId(
+		classId: number
+	): Promise<ClassInvitationDto[]> {
+		await this.classesChecker.checkExistClassById(classId);
+
+		const clazz = await this.classRepository.findByPk(classId);
+		const invitations = await clazz!.getInvitations();
+
+		return invitations.map(ivt => ({
+			id: ivt.id,
+			email: ivt.email,
+			inviteCode: clazz!.inviteCode,
+			roleInvite: ivt.role,
+			classInformation: { id: clazz!.id, className: clazz!.clsName }
+		}));
+	}
 
 	async findInvitationByInviteCode(
 		inviteCode: string
 	): Promise<ClassInvitationDto> {
-		await this.checkExistsClassByInviteCode(inviteCode);
+		await this.classesChecker.checkExistsClassByInviteCode(inviteCode);
+
 		const clazz = await Class.findClassByInviteCode(inviteCode);
 
 		return {
@@ -37,17 +92,27 @@ export class ClassInvitationServices {
 		role: number,
 		email: string
 	): Promise<ClassInvitationDto> {
-		await this.checkExistsInvitationByClassInviteCodeAndRoleAndEmail(
-			inviteCode,
+		await this.classesChecker.checkExistsClassByInviteCode(inviteCode);
+
+		const clazz = await this.classRepository.findClassByInviteCode(
+			inviteCode
+		);
+
+		await this.classInvitationChecker.checkExistsInvitation(
+			clazz!.id,
 			role,
 			email
 		);
 
-		const clazz = await Class.findClassByInviteCode(inviteCode);
+		const classInvitation = await clazz!.findClassInvitationByRoleAndEmail(
+			role,
+			email
+		);
 
 		return {
 			inviteCode: clazz!.inviteCode,
-			roleInvite: role!,
+			email: classInvitation!.email,
+			roleInvite: classInvitation!.role,
 			classInformation: {
 				id: clazz!.id,
 				className: clazz!.clsName
@@ -59,11 +124,10 @@ export class ClassInvitationServices {
 		inviteCode: string,
 		userId: number
 	): Promise<ClassInvitationAcceptedDto> {
-		await this.checkExistsClassByInviteCode(inviteCode);
-
+		await this.classesChecker.checkExistsClassByInviteCode(inviteCode);
 		const clazz = await Class.findClassByInviteCode(inviteCode);
 
-		await this.checkExistsUserInClass(
+		await this.classesChecker.checkExistsUserInClass(
 			userId,
 			clazz!.id,
 			RoleUserInClass.STUDENT
@@ -80,32 +144,33 @@ export class ClassInvitationServices {
 	async joinToClassByAccessToken(
 		inviteCode: string,
 		role: number,
-		userId: string
+		userId: number
 	): Promise<ClassInvitationAcceptedDto> {
 		const user = await this.userRepository.findByPk(userId);
 		const userEmail = user!.email;
 
-		await this.checkExistsInvitationByClassInviteCodeAndRoleAndEmail(
-			inviteCode,
+		await this.classesChecker.checkExistsClassByInviteCode(inviteCode);
+		const clazz = await Class.findClassByInviteCode(inviteCode);
+
+		await this.classInvitationChecker.checkExistsInvitation(
+			clazz!.id,
 			role,
 			userEmail
 		);
 
 		const createdInvitation =
-			await this.classInvitationRepository.findClassInvitationByClassInviteCodeAndRoleAndEmail(
-				inviteCode,
-				role,
-				userEmail
-			);
+			await clazz!.findClassInvitationByRoleAndEmail(role, userEmail);
 
-		this.checkUserEmailMatchInvitationEmail(
+		await this.classInvitationChecker.checkUserEmailMatchInvitationEmail(
 			userEmail,
 			createdInvitation!.email
 		);
 
-		const clazz = await createdInvitation!.getClass();
-
-		await this.checkExistsUserInClass(user!.id, clazz!.id, role);
+		await this.classesChecker.checkExistsUserInClass(
+			user!.id,
+			clazz!.id,
+			role
+		);
 		await clazz!.addMember(user!.id);
 		await createdInvitation!.destroy();
 
@@ -115,49 +180,23 @@ export class ClassInvitationServices {
 		};
 	}
 
-	private async checkExistsClassByInviteCode(inviteCode: string) {
-		const clz = await Class.findClassByInviteCode(inviteCode);
+	async getClassInvitationPublicLink(classId: number) {
+		const clazz = await this.classRepository.findByPk(classId);
 
-		if (!clz)
-			throw new NotFoundError('Cannot found any class with invite code');
+		if (!clazz) throw new NotFoundError('Class is not existed');
+
+		return `${config.DOMAIN}/api/invites/${clazz.inviteCode}`;
 	}
 
-	private async checkUserEmailMatchInvitationEmail(
-		userEmail: string,
-		invitationEmail: string
-	) {
-		if (userEmail !== invitationEmail) throw new IllegalArgumentError('');
-	}
-
-	private async checkExistsUserInClass(
-		userId: number,
-		classId: number,
-		role: number
-	) {
-		const count = await Class.countOccurOfMemberInClassWithUserIdAndRole(
-			classId,
-			userId,
-			role
+	async getClassInvitationLink(invitationId: number) {
+		const invitation = await this.classInvitationRepository.findByPk(
+			invitationId
 		);
 
-		if (count > 0)
-			throw new IllegalArgumentError(
-				`User is already existed in class with role code: ${role}`
-			);
-	}
+		if (!invitation) throw new NotFoundError(`Invitation is not exists`);
 
-	private async checkExistsInvitationByClassInviteCodeAndRoleAndEmail(
-		inviteCode: string,
-		role: number,
-		email: string
-	) {
-		const invitation =
-			await this.classInvitationRepository.findClassInvitationByClassInviteCodeAndRoleAndEmail(
-				inviteCode,
-				role,
-				email
-			);
+		const clazz = await invitation.getClass();
 
-		if (!invitation) throw new NotFoundError(`Cannot found any invitation`);
+		return `${config.DOMAIN}/api/invites/access_token/${clazz.inviteCode}?role=${invitation.role}`;
 	}
 }
