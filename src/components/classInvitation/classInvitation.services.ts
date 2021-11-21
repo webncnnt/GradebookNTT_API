@@ -9,7 +9,7 @@ import { Class, ClassStatus } from '@src/models/Class';
 import { User } from '@src/models/User';
 import { RoleUserInClass, UserClass } from '@src/models/UserClass';
 import { config } from '@src/config';
-import { ClassInvitationChecker } from './classesInvitation.checker';
+import { ClassInvitationChecker } from './classInvitation.checker';
 import { ClassesChecker } from '../classes/classes.checker';
 
 export class ClassInvitationServices {

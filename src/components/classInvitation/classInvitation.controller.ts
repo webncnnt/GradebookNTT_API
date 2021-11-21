@@ -20,7 +20,7 @@ export class ClassInvitationController {
 
 			res.status(HttpStatusCode.OK).json({
 				status: 'success',
-				message: 'Invitation email is sent successfully'
+				message: `Invitation email ${classInvitation} to is sent successfully`
 			});
 		}
 	);

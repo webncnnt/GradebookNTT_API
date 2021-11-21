@@ -5,7 +5,7 @@ import { User } from '@src/models/User';
 import { UserClass } from '@src/models/UserClass';
 import { Router } from 'express';
 import { ClassesChecker } from '../classes/classes.checker';
-import { ClassInvitationChecker } from './classesInvitation.checker';
+import { ClassInvitationChecker } from './classInvitation.checker';
 import { ClassInvitationController } from './classInvitation.controller';
 import { ClassInvitationServices } from './classInvitation.services';
 
