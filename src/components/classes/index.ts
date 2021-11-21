@@ -10,7 +10,7 @@ router.use(
 		// just for testing
 		req.user = {
 			id: 1,
-			email: 'dfdf',
+			email: 'dfdfaaaaaa@gmail.com',
 			roles: [],
 			isBlock: false
 		};

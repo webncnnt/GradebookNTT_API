@@ -4,18 +4,41 @@ import { User } from '@src/models/User';
 import { Router } from 'express';
 import { ClassesController } from './classes.controller';
 import { ClassesService } from './classes.services';
-import classesMiddleware, { restrictTo } from './classes.middleware';
+import classesMiddleware from './classes.middleware';
 import { UserClass } from '@src/models/UserClass';
+import { ClassInvitationServices } from '../classInvitation/classInvitation.services';
+import { ClassesChecker } from './classes.checker';
+import { ClassInvitationChecker } from '../classInvitation/classesInvitation.checker';
 
 const router = Router();
+
+const classesChecker = new ClassesChecker(Class, UserClass);
 
 const classesService = new ClassesService(
 	Class,
 	User,
-	ClassInvitation,
-	UserClass
+	UserClass,
+	classesChecker
 );
-const classesController = new ClassesController(classesService);
+
+const classInvitationChecker = new ClassInvitationChecker(
+	UserClass,
+	Class,
+	ClassInvitation
+);
+
+const classInvitationServices = new ClassInvitationServices(
+	ClassInvitation,
+	User,
+	Class,
+	classInvitationChecker,
+	classesChecker
+);
+
+const classesController = new ClassesController(
+	classesService,
+	classInvitationServices
+);
 
 // router.get('/:id/activities');
 
@@ -42,9 +65,10 @@ router
 		classesController.leftClass
 	);
 
+router.get('/:id/overview', classesController.getClassOverviewById);
+
 router
 	.route('/:id')
-	.get(classesController.getClassDetailById)
 	.patch(classesMiddleware.restrictTo('owner'), classesController.updateById)
 	.delete(
 		classesMiddleware.restrictTo('owner'),
@@ -54,6 +78,6 @@ router
 router
 	.route('/')
 	.get(classesController.getAllClassesByUserId)
-	.post(classesController.create);
+	.post(classesController.createClass);
 
 export default router;

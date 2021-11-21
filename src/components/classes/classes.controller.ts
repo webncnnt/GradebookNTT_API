@@ -13,17 +13,22 @@ import { HttpStatusCode } from '@src/constant/httpStatusCode';
 import { HEADER_COUNT } from '@src/constant/headerConstants';
 import { AuthorizeMessageError } from '@src/constant/authorizeError';
 import { NextFunction, Request, Response } from 'express';
-import { RoleUserInClass } from '@src/models/UserClass';
 import { ClassInvitationInput } from '../classInvitation/classInvitation.dto';
+import { ClassInvitationServices } from '../classInvitation/classInvitation.services';
 
 export class ClassesController {
 	private readonly classesService: ClassesService;
+	private readonly classesInvitationService: ClassInvitationServices;
 
-	constructor(classesService: ClassesService) {
+	constructor(
+		classesService: ClassesService,
+		classesInvitationService: ClassInvitationServices
+	) {
 		this.classesService = classesService;
+		this.classesInvitationService = classesInvitationService;
 	}
 
-	create = catchAsyncRequestHandler(
+	createClass = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
 			const createClassInput = req.body as CreateClassInput;
 
@@ -52,15 +57,23 @@ export class ClassesController {
 			const classId = +req.params.id;
 			const invitationInput = req.body as ClassInvitationInput;
 
-			await this.classesService.createInvitation(
-				classId,
-				invitationInput
-			);
+			const invitationDto =
+				await this.classesInvitationService.createInvitation(
+					classId,
+					invitationInput
+				);
 
-			console.log('in create invitation');
+			const inviteUrl =
+				await this.classesInvitationService.getClassInvitationLink(
+					invitationDto.id!
+				);
+
+			console.log(inviteUrl);
 			// send email
 
-			res.status(HttpStatusCode.CREATED);
+			res.status(HttpStatusCode.CREATED).json({
+				status: 'success'
+			});
 		}
 	);
 
@@ -68,7 +81,28 @@ export class ClassesController {
 		async (req: Request, res: Response, next: NextFunction) => {
 			const invitationId = +req.params.invitationId;
 
-			await this.classesService.deleteInvitationById(invitationId);
+			await this.classesInvitationService.deleteInvitationById(
+				invitationId
+			);
+		}
+	);
+
+	getClassPublicInviteLink = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const classId = +req.params.id;
+
+			const inviteLink =
+				await this.classesInvitationService.getClassInvitationPublicLink(
+					classId
+				);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				data: {
+					id: classId,
+					inviteLink
+				}
+			});
 		}
 	);
 
@@ -76,7 +110,17 @@ export class ClassesController {
 		async (req: Request, res: Response, next: NextFunction) => {
 			const classId = +req.params.classId;
 
-			await this.classesService.findAllInvitationsByClassId(classId);
+			const invitations =
+				await this.classesInvitationService.findAllInvitationsByClassId(
+					classId
+				);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				data: {
+					invitations
+				}
+			});
 		}
 	);
 
@@ -102,16 +146,25 @@ export class ClassesController {
 		}
 	);
 
-	getClassDetailById = catchAsyncRequestHandler(
-		async (req: Request, res: Response, next: NextFunction) => {}
+	getClassOverviewById = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const classId = +req.params.id;
+
+			const clzDto = await this.classesService.findClassOverviewById(
+				classId
+			);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				data: clzDto
+			});
+		}
 	);
 
 	getSortInformationMembersInClass = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
 			const classId = +req.params.id;
 
-			console.log(classId);
-			console.log('get sort information');
 			const clzDto =
 				await this.classesService.findAllMemberOverviewsByClassId(
 					classId
@@ -125,10 +178,12 @@ export class ClassesController {
 		async (req: Request, res: Response, next: NextFunction) => {
 			const userId = req.user?.id;
 			const classId = +req.params.id;
-			const role = +req.query;
+			const role = req.query.role ? +req.query.role : undefined;
 
 			if (!userId)
 				throw new UnauthorizedError(AuthorizeMessageError.UNAUTHORIZED);
+
+			if (!role) throw new IllegalArgumentError('Invalid role');
 
 			await this.classesService.leftClass(userId, classId, role);
 		}
