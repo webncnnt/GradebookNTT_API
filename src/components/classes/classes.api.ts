@@ -8,7 +8,7 @@ import classesMiddleware from './classes.middleware';
 import { UserClass } from '@src/models/UserClass';
 import { ClassInvitationServices } from '../classInvitation/classInvitation.services';
 import { ClassesChecker } from './classes.checker';
-import { ClassInvitationChecker } from '../classInvitation/classesInvitation.checker';
+import { ClassInvitationChecker } from '../classInvitation/classInvitation.checker';
 
 const router = Router();
 
