@@ -11,7 +11,7 @@ import { config } from '@src/config';
 export const isAuth = async (req: any, res: any, next: any) => {
 	// Lấy access token từ header
 	const accessTokenFromHeader: string = req.headers.authorization;
-	const tokenId: string = req.headers.tokenIdGG;
+	const tokenId: string = req.headers.tokenidgg;
 
 	if (!accessTokenFromHeader && !tokenId) {
 		return res.status(401).json({

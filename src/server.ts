@@ -2,7 +2,7 @@ import { config } from 'config';
 import { connectDatabase } from 'db';
 import app from 'app';
 
-connectDatabase(true, true).then(() => {
+connectDatabase(true, false).then(() => {
 	console.log('Setup database successful');
 });
 
