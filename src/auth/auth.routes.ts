@@ -70,7 +70,7 @@ router.post('/changePwd/:id', (req, res, next) => {
 
 
 router.post("/google", async (req, res) => {
-    const { token }  = req.body.tokenId
+    const { token }  = req.body;
 
     const ticket = await client.verifyIdToken({
         idToken: token,
@@ -86,20 +86,11 @@ router.post("/google", async (req, res) => {
 	}
     const { name, email} = ticket.getPayload();    
 	await createUser(name, email, "").then((result) => {
-		res.json({
-			name: name,
-			email: email
-		})
+		res.json(result)
 	}).catch((err) => {
 		console.log("Cannot create new user");
 		
 	});
-    // const user = await db.user.upsert({ 
-    //     where: { email: email },
-    //     update: { name, picture },
-    //     create: { name, email, picture }
-    // })
-    // res.status(201)
-    // res.json(user)
+
 })
 export default router;
