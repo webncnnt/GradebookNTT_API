@@ -25,7 +25,6 @@
 		"sequelize": "^6.9.0",
 		"sequelize-cli": "^6.3.0",
 		"tsconfig-paths": "^3.11.0",
-		"tsyringe": "^4.6.0",
 		"util": "^0.12.4"
 	},
 	"devDependencies": {
