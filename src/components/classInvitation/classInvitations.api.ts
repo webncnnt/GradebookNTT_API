@@ -11,7 +11,7 @@ import { ClassInvitationServices } from './classInvitation.services';
 
 const router = Router();
 
-const classChecker = new ClassesChecker(Class, UserClass);
+const classChecker = new ClassesChecker(Class, User, UserClass);
 
 const classInvitationChecker = new ClassInvitationChecker(
 	UserClass,

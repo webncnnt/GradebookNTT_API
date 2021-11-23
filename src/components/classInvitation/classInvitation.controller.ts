@@ -58,8 +58,6 @@ export class ClassInvitationController {
 	joinClassByInviteCode = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
 			const inviteCode = req.params.inviteCode;
-			if (!inviteCode) throw new IllegalArgumentError('');
-
 			const userId = req.user!.id;
 
 			const invitationAcceptedDto =

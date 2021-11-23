@@ -133,7 +133,13 @@ export class ClassInvitationServices {
 			RoleUserInClass.STUDENT
 		);
 
-		await clazz!.addMember(userId);
+		const userClass = await UserClass.create({
+			classId: clazz!.id,
+			userId: userId,
+			role: RoleUserInClass.STUDENT
+		});
+
+		await clazz!.addUserClass(userClass.id);
 
 		return {
 			id: clazz!.id,
@@ -171,7 +177,13 @@ export class ClassInvitationServices {
 			clazz!.id,
 			role
 		);
-		await clazz!.addMember(user!.id);
+
+		const userClass = await UserClass.create({
+			classId: clazz!.id,
+			userId: user!.id,
+			role
+		});
+		await clazz!.addUserClass(userClass);
 		await createdInvitation!.destroy();
 
 		return {
