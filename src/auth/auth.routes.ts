@@ -1,7 +1,10 @@
-import { findUserById } from './users.model';
+import { findUserById, createUser } from './users.model';
 import { register, login, changePassWord } from './auth.controllers';
+import { config } from '@src/config';
 import express from 'express';
 const router = express.Router();
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(config.CLIENT_ID);
 
 router.post('/register', (req, res, next) => {
 	const fullname = req.body.fullname;
@@ -65,4 +68,29 @@ router.post('/changePwd/:id', (req, res, next) => {
 		});
 });
 
+
+router.post("/google", async (req, res) => {
+    const { token }  = req.body;
+
+    const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: config.CLIENT_ID
+    });
+
+	if(!ticket){
+		res.status(401)
+			.json({
+                message: "tokenId is invalid or expired!",
+               
+            });
+	}
+    const { name, email} = ticket.getPayload();    
+	await createUser(name, email, "").then((result) => {
+		res.json(result)
+	}).catch((err) => {
+		console.log("Cannot create new user");
+		
+	});
+
+})
 export default router;

@@ -23,7 +23,7 @@ export const updateProfile = async (
 ) => {
 	const user: any = await findUserById(userId);
 
-	if (studentId != null) {
+	if (studentId != null || studentId != "") {
 		const isExist = await findUserByStudentIdAndUserId(userId, studentId);
 
 		if (isExist != null) {

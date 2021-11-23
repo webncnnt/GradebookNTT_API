@@ -16,19 +16,19 @@ export const createUser = async (
 	email: string,
 	password: string
 ) => {
-	await User.create({
-		fullname: fullname,
-		email: email,
-		password: password,
-		role: 0,
-		status: false
-	});
-	// const strQuery = `insert into "Users"(fullname, email, password, role, status)
-	//  values ('${fullname}', '${email}', '${password}', 0, ${false})`;
 
-	// await database.query(strQuery);
-
-	return true;
+	const user = await findByEmail(email);
+	if(user == null){
+		await User.create({
+			fullname: fullname,
+			email: email,
+			password: password,
+			role: 0,
+			status: false
+		});
+	}
+	
+	return await findByEmail(email);
 };
 
 export const findUserById = async (userId: number) => {

@@ -5,6 +5,10 @@ const jwt = require('jsonwebtoken');
 const promisify = require('util').promisify;
 const sign = promisify(jwt.sign).bind(jwt);
 const verify = promisify(jwt.verify).bind(jwt);
+import { config } from '@src/config';
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(config.CLIENT_ID);
+
 
 export const generateToken = async (
 	payload: any,
@@ -47,3 +51,12 @@ export const decodeToken = async (token: string, secretKey: string) => {
 		return null;
 	}
 };
+
+export const verifyIdToken = async ( idToken: string, audience: string)=>{
+	const ticket = await client.verifyIdToken({
+        idToken: idToken,
+        audience: audience
+    });
+
+	return ticket;
+}
