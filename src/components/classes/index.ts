@@ -4,20 +4,6 @@ import apiRouter from './classes.api';
 
 const router = Router();
 
-router.use(
-	'/',
-	(req, res, next) => {
-		// just for testing
-		req.user = {
-			id: 1,
-			email: 'dfdfaaaaaa@gmail.com',
-			roles: [],
-			isBlock: false
-		};
-
-		next();
-	},
-	apiRouter
-);
+router.use('/', isAuth, apiRouter);
 
 export default router;
