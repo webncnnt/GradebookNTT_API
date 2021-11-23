@@ -1,6 +1,5 @@
 import sequelize from '@src/db/sequelize';
 import {
-	Association,
 	BelongsToGetAssociationMixin,
 	BelongsToManyAddAssociationsMixin,
 	BelongsToManyGetAssociationsMixin,
@@ -11,8 +10,8 @@ import {
 	BelongsToManyRemoveAssociationsMixin,
 	HasManyAddAssociationMixin,
 	HasManyRemoveAssociationMixin,
-	BelongsToCreateAssociationMixin,
-	BelongsToManyCountAssociationsMixin
+	BelongsToManyCountAssociationsMixin,
+	HasManyCreateAssociationMixin
 } from 'sequelize';
 import { BelongsToSetAssociationMixin } from 'sequelize';
 import { HasManySetAssociationsMixin } from 'sequelize';
@@ -21,7 +20,7 @@ import { Model, Optional } from 'sequelize';
 import { DataTypes } from 'sequelize';
 import { ClassInvitation } from './ClassInvitation';
 import { User } from './User';
-import { RoleUserInClass } from './UserClass';
+import { RoleUserInClass, UserClass } from './UserClass';
 
 export enum ClassStatus {
 	BLOCK = 0,
@@ -57,6 +56,7 @@ interface ClassCreationAttributes
 export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
 	id!: number;
 	clsName!: string;
+	ownerId!: number;
 	inviteCode!: string;
 	coverImage!: string | null;
 	description!: string | null;
@@ -85,6 +85,12 @@ export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
 	setInvitations!: HasManySetAssociationsMixin<ClassInvitation, number>;
 	addInvitation!: HasManyAddAssociationMixin<ClassInvitation, number>;
 	removeInvitation!: HasManyRemoveAssociationMixin<ClassInvitation, number>;
+
+	getUserClasses!: HasManyGetAssociationsMixin<UserClass>;
+	countUserClasses!: HasManySetAssociationsMixin<UserClass, number>;
+	hasUserClass!: HasManyCreateAssociationMixin<UserClass>;
+	addUserClass!: HasManyAddAssociationMixin<UserClass, number>;
+	removeUserClass!: HasManyRemoveAssociationMixin<UserClass, number>;
 
 	static async findAllMembersInClassByUserId(
 		classId: number,
@@ -130,7 +136,6 @@ export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
 
 	static async existByClassId(id: number): Promise<boolean> {
 		const clz = await Class.findByPk(id);
-
 		if (!clz) return false;
 		return true;
 	}
