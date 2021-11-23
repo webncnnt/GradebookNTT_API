@@ -14,7 +14,7 @@ export type EmailInvitationInfor = {
 		name: string;
 		avatar: string;
 	};
-	className: string;
+	className: string
 	inviteLink: string;
 	role: 'student' | 'teacher';
 };
@@ -95,7 +95,7 @@ export const sendInvitation = async (invitationInfor: EmailInvitationInfor) => {
 		html: template
 	};
 
-	await sendEmail(msg);
+	return await sendEmail(msg);
 };
 
 export const sendEmail = async (msg: sgMail.MailDataRequired) => {

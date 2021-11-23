@@ -1,3 +1,4 @@
+import { sendInvitation } from './../mailServices/mail.service';
 import { catchAsyncRequestHandler } from '@src/utils/catchAsyncRequestHandler';
 import {
 	AppError,
@@ -16,6 +17,8 @@ import { NextFunction, Request, Response } from 'express';
 import { ClassInvitationInput } from '../classInvitation/classInvitation.dto';
 import { ClassInvitationServices } from '../classInvitation/classInvitation.services';
 import { RoleUserInClass } from '@src/models/UserClass';
+import { EmailInvitationInfor } from '../mailServices/mail.service';
+import { Class } from '@src/models/Class';
 
 export class ClassesController {
 	private readonly classesService: ClassesService;
@@ -71,6 +74,31 @@ export class ClassesController {
 
 			console.log(inviteUrl);
 			// send email
+			const _class = await Class.findOne({
+				where: {
+					id: classId
+				}
+			});
+			const clsName = _class?.clsName == undefined ? '' : _class?.clsName;
+			let invitationInfo: EmailInvitationInfor = {
+				to: {
+					email: invitationDto.email
+				},
+				from: {
+					email: 'req.user.email',
+					name: 'req.user.name',
+					avatar: 'req.user.avatar'
+				},
+				className: clsName,
+				inviteLink: inviteUrl,
+				role: invitationDto.role == 0 ? 'student' : 'teacher'
+			};
+			const isSuccess = await sendInvitation(invitationInfo);
+			if (isSuccess) {
+				console.log('Send email successfully.');
+			} else {
+				console.log('Send email faild.');
+			}
 
 			res.status(HttpStatusCode.CREATED).json({
 				status: 'success'
