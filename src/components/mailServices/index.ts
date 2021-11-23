@@ -13,22 +13,6 @@ emailRouter.post('/sendInvitation', (req, res, next) => {
 		html: `<h3>You are invited to join the class at the following link</h3> <a href='hfhd'>Click the link to join</a>`
 	};
 
-	// let a: EmailInvitationInfor = {
-	// 	to: {
-	// 		email: email,
-	// 		name: receiverName,
-	// 	},
-	// 	from: {
-	// 		email: 'huynhthinhi206@gmail.com',
-	// 		name: 'HTN'
-	// 	},
-	// 	class: {
-	// 		id: 1,
-	// 		className: 'ClassRoom'
-	// 	},
-	// 	inviteLink: 'string'
-	// };
-
 	sendEmail(msg)
 		.then(result => {
 			res.json({
