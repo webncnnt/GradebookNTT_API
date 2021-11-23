@@ -1,8 +1,12 @@
 import { Class } from '@src/models/Class';
+import { User } from '@src/models/User';
 import { RoleUserInClass, UserClass } from '@src/models/UserClass';
 import { UnauthorizedError } from '@src/utils/appError';
 import { catchAsyncRequestHandler } from '@src/utils/catchAsyncRequestHandler';
 import { NextFunction, Request, Response } from 'express';
+import { ClassesChecker } from './classes.checker';
+
+const classesChecker = new ClassesChecker(Class, User, UserClass);
 
 export const protect = catchAsyncRequestHandler(
 	async (req: Request, res: Response, next: NextFunction) => {
@@ -14,7 +18,6 @@ export const protect = catchAsyncRequestHandler(
 			);
 
 		const classId = +req.params.id;
-
 		const clazz = await Class.findByPk(classId);
 		const owner = await clazz?.getOwner();
 
@@ -50,4 +53,12 @@ export const restrictTo = (...roles: string[]) => {
 	};
 };
 
-export default { restrictTo, protect };
+export const verifyExistsClass = catchAsyncRequestHandler(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const classId = +req.params.id;
+		await classesChecker.checkExistClassById(classId);
+		next();
+	}
+);
+
+export default { restrictTo, protect, verifyExistsClass };

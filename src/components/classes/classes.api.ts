@@ -9,16 +9,18 @@ import { UserClass } from '@src/models/UserClass';
 import { ClassInvitationServices } from '../classInvitation/classInvitation.services';
 import { ClassesChecker } from './classes.checker';
 import { ClassInvitationChecker } from '../classInvitation/classInvitation.checker';
+import { ClassesCreator } from './classes.creator';
 
 const router = Router();
 
-const classesChecker = new ClassesChecker(Class, UserClass);
-
+const classesChecker = new ClassesChecker(Class, User, UserClass);
+const classesCreator = new ClassesCreator(Class, UserClass);
 const classesService = new ClassesService(
 	Class,
 	User,
 	UserClass,
-	classesChecker
+	classesChecker,
+	classesCreator
 );
 
 const classInvitationChecker = new ClassInvitationChecker(
@@ -46,7 +48,11 @@ const classesController = new ClassesController(
 
 // router.get('/:id/posts');
 
-router.use('/:id', classesMiddleware.protect);
+router.use(
+	'/:id',
+	classesMiddleware.verifyExistsClass,
+	classesMiddleware.protect
+);
 
 router
 	.route('/:id/invitations')
@@ -54,21 +60,32 @@ router
 	.post(classesController.createInvitation);
 
 router
-	.route('/:id/members')
-	.get(classesController.getSortInformationMembersInClass)
+	.route('/:id/students')
+	.get(classesController.getAllStudentOverviewsByClassId)
 	.delete(
 		classesMiddleware.restrictTo('owner'),
-		classesController.removeMembers
+		classesController.removeStudents
 	)
 	.delete(
-		classesMiddleware.restrictTo('student', 'teacher'),
+		classesMiddleware.restrictTo('student'),
 		classesController.leftClass
 	);
 
-router.get('/:id/overview', classesController.getClassOverviewById);
+router
+	.route('/:id/teachers')
+	.get(classesController.getAllTeacherOverviewsByClassId)
+	.delete(
+		classesMiddleware.restrictTo('owner'),
+		classesController.removeTeachers
+	)
+	.delete(
+		classesMiddleware.restrictTo('teacher'),
+		classesController.leftClass
+	);
 
 router
 	.route('/:id')
+	.get(classesController.getClassOverviewById)
 	.patch(classesMiddleware.restrictTo('owner'), classesController.updateById)
 	.delete(
 		classesMiddleware.restrictTo('owner'),

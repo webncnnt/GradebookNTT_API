@@ -15,6 +15,7 @@ import { AuthorizeMessageError } from '@src/constant/authorizeError';
 import { NextFunction, Request, Response } from 'express';
 import { ClassInvitationInput } from '../classInvitation/classInvitation.dto';
 import { ClassInvitationServices } from '../classInvitation/classInvitation.services';
+import { RoleUserInClass } from '@src/models/UserClass';
 
 export class ClassesController {
 	private readonly classesService: ClassesService;
@@ -106,6 +107,38 @@ export class ClassesController {
 		}
 	);
 
+	getAllStudentOverviewsByClassId = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const classId = +req.params.id;
+
+			const students =
+				await this.classesService.findAllStudentOverviewsByClassId(
+					classId
+				);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				data: students
+			});
+		}
+	);
+
+	getAllTeacherOverviewsByClassId = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const classId = +req.params.id;
+
+			const teachers =
+				await this.classesService.findAllTeacherOverviewsByClassId(
+					classId
+				);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				data: teachers
+			});
+		}
+	);
+
 	getAllInvitationsByClassId = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
 			const classId = +req.params.classId;
@@ -128,8 +161,6 @@ export class ClassesController {
 		async (req: Request, res: Response, next: NextFunction) => {
 			const userId = +req.user!.id;
 			const page = req.query.page ? +req.query.page : 1;
-
-			console.log(page);
 
 			const [classesDto, totalClasses] =
 				await this.classesService!.findAndCountAllClassOverviewsWithUserIdByPage(
@@ -161,19 +192,6 @@ export class ClassesController {
 		}
 	);
 
-	getSortInformationMembersInClass = catchAsyncRequestHandler(
-		async (req: Request, res: Response, next: NextFunction) => {
-			const classId = +req.params.id;
-
-			const clzDto =
-				await this.classesService.findAllMemberOverviewsByClassId(
-					classId
-				);
-
-			res.status(200).json({ status: 'success', data: clzDto });
-		}
-	);
-
 	leftClass = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
 			const userId = req.user?.id;
@@ -186,25 +204,48 @@ export class ClassesController {
 			if (!role) throw new IllegalArgumentError('Invalid role');
 
 			await this.classesService.leftClass(userId, classId, role);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success'
+			});
 		}
 	);
 
-	// Todo: teacher id == owner id => not delete
-	removeMembers = catchAsyncRequestHandler(
+	removeTeachers = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
 			const classId = +req.params.id;
-			const role = req.query.role ? +req.query.role : undefined;
 			const memberIds = (req.query.id as string)
 				?.split(',')
 				.map(id => +id);
 
-			if (!memberIds || !role)
+			if (!memberIds)
 				throw new IllegalArgumentError('Invalid role or member id');
 
-			await this.classesService.removeMembersByClassId(
+			await this.classesService.removeTeachersByClassId(
 				classId,
-				memberIds,
-				role
+				memberIds
+			);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success',
+				message: 'Remove members successfully'
+			});
+		}
+	);
+
+	removeStudents = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const classId = +req.params.id;
+			const memberIds = (req.query.id as string)
+				?.split(',')
+				.map(id => +id);
+
+			if (!memberIds)
+				throw new IllegalArgumentError('Invalid role or member id');
+
+			await this.classesService.removeStudentsByClassId(
+				classId,
+				memberIds
 			);
 
 			res.status(HttpStatusCode.OK).json({

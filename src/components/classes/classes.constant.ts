@@ -1,7 +1,10 @@
 export class ClassesMessageError {
 	static readonly INVALID_CLASS_ID = 'Deleted or invalid class ID';
-	static readonly CLASS_NOT_EXISTS = 'Class does not exist';
-	static readonly CLASS_NOT_EXISTS_WITH_INVITE_CODE = 'Class does not exist';
+	static readonly CLASS_NOT_EXISTS = 'Class does not exists';
+	static readonly CLASS_NOT_EXISTS_WITH_INVITE_CODE =
+		'Class does not exist with invite code';
+	static readonly CLASS_ALREADY_EXISTS = 'User is already existed in class';
+
 	static readonly NOT_ENOUGH_INFORMATION_CREATE_CLASS =
 		'Information is not enough to create class';
 	static readonly NOT_ENOUGH_INFORMATION_UPDATE_CLASS =
