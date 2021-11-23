@@ -1,0 +1,144 @@
+<div
+	style="
+		background-color: #ffffff;
+		color: gray;
+		font-family: Roboto, Helvetica, Arial, sans-serif;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		font-size: 14px;
+		box-sizing: border-box;
+		line-height: 1.5;
+	"
+>
+	<div style="padding: 0 32px">
+		<div>
+			<div style="margin: 0 auto; max-width: 520px; min-width: 250px">
+				<div aria-label="gradebook-logo">
+					<img
+						alt="gradebook-classroom-logo"
+						src="/images/gradebookLogo.png"
+						height="30px"
+					/>
+				</div>
+
+				<div aria-label="introduce" style="margin-top: 40px">
+					<div>Xin chào!</div>
+					<div>
+						{{inviterName}} (<a href="mailto:{{inviterEmail}}"
+							>{{inviterEmail}}</a
+						>) đã mời bạn cùng dạy lớp
+						<a href="{{invitationLink}}">{{invitationClassName}}</a>
+					</div>
+				</div>
+
+				<div
+					aria-label="invitation-panel"
+					style="
+						margin-top: 20px;
+						border: 1px solid #dddddd;
+						border-radius: 5px;
+						overflow: hidden;
+					"
+				>
+					<div aria-label="invitation-header">
+						<div
+							style="
+								background-color: #3b82f6;
+								color: #ffffff;
+								padding: 20px 30px;
+								border-radius: 2px;
+							"
+						>
+							<div
+								style="
+									text-transform: uppercase;
+									font-size: 11px;
+								"
+							>
+								lời mời tham gia lớp học
+							</div>
+							<div style="font-size: 18px">
+								{{invitationClassName}}
+							</div>
+						</div>
+					</div>
+
+					<div
+						aria-label="invitation-main"
+						style="padding: 20px 30px"
+					>
+						<div
+							aria-label="inviter-information"
+							style="
+								display: flex;
+								flex-direction: row;
+								color: gray;
+								margin-top: 20px;
+								align-items: center;
+							"
+						>
+							<img
+								aria-label="inviter-avatar"
+								src="{{inviterAvatar}}"
+								style="
+									width: 40px;
+									height: 40px;
+									object-fit: cover;
+								"
+							/>
+
+							<div
+								style="
+									display: flex;
+									flex-direction: column;
+									margin-left: 10px;
+								"
+							>
+								<div
+									style="
+										font-size: 11px;
+										text-transform: uppercase;
+									"
+								>
+									giáo viên
+								</div>
+								<div
+									aria-label="inviter-image"
+									style="font-size: 20px; color: #111827"
+								>
+									{{inviterName}}
+								</div>
+							</div>
+						</div>
+
+						<a
+							role="button"
+							aria-label="button-accept-invitation"
+							style="
+								text-transform: capitalize;
+								padding: 8px 25px;
+								border: 1px solid #93c5fd;
+								background-color: #ffffff;
+								cursor: pointer;
+								border-radius: 5px;
+								margin-top: 30px;
+								display: inline-block;
+								color: #3b82f6;
+								font-weight: bold;
+								font-size: 14px;
+							"
+						>
+							tham gia
+						</a>
+					</div>
+				</div>
+				<div style="margin-top: 20px">
+					Nếu bạn chấp nhận, thông tin liên hệ của bạn sẽ được chia sẻ
+					với các thành viên của lớp học và những ứng dụng mà họ cho
+					phép sử dụng Lớp học.
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
