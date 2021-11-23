@@ -1,8 +1,6 @@
 import { Router } from 'express';
-import { sendStudentInvitation, sendTeacherInvitation, sendEmail, EmailInvitationInfor } from "./mail.service";
+import { sendEmail, EmailInvitationInfor } from './mail.service';
 const emailRouter = Router();
-
-
 
 emailRouter.post('/sendInvitation', (req, res, next) => {
 	const receiverName = req.body.receiverName;
