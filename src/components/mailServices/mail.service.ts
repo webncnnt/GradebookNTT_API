@@ -5,6 +5,12 @@ import fs from 'fs';
 
 sgMail.setApiKey(config.SENDGRID_API_KEY);
 
+const GRADEBOOK_LOGO =
+	'https://res.cloudinary.com/dcm0ibm0b/image/upload/v1637742041/email/gradebookLogo_pvtwpz.png';
+
+const DEFAULT_SENDER_AVATAR =
+	'https://res.cloudinary.com/dcm0ibm0b/image/upload/v1637742041/email/download_mkwwa0.png';
+
 export type EmailInvitationInfor = {
 	to: {
 		email: string;
@@ -22,7 +28,7 @@ export type EmailInvitationInfor = {
 type InvitationEmailData = {
 	inviterEmail: string;
 	inviterName: string;
-	inviterAvatar: string;
+	inviterAvatar?: string;
 	invitationLink: string;
 	invitationClassName: string;
 	role: 'student' | 'teacher';
@@ -34,7 +40,7 @@ export const renderInvitationTemplate = async (
 	const {
 		inviterEmail,
 		inviterName,
-		inviterAvatar,
+		inviterAvatar = DEFAULT_SENDER_AVATAR,
 		invitationLink,
 		invitationClassName,
 		role
@@ -54,7 +60,7 @@ export const renderInvitationTemplate = async (
 		inviterAvatar,
 		invitationLink,
 		invitationClassName,
-		domain: config.DOMAIN
+		logo: GRADEBOOK_LOGO
 	});
 
 	return templateRendered;
@@ -62,7 +68,7 @@ export const renderInvitationTemplate = async (
 
 export const sendInvitation = async (invitationInfor: EmailInvitationInfor) => {
 	const {
-		avatar: inviterAvatar = `${config.DOMAIN}/images/defaultAvatar.png`,
+		avatar: inviterAvatar,
 		email: inviterEmail,
 		name: inviterName
 	} = invitationInfor.from;
