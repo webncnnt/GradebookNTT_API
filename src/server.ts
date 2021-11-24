@@ -5,7 +5,7 @@ import { User } from './models/User';
 import { UserClass } from './models/UserClass';
 import { Class } from './models/Class';
 
-connectDatabase(true, true).then(() => {
+connectDatabase(true, false).then(() => {
 	console.log('Setup database successful');
 	console.log(User.prototype);
 	console.log(UserClass.prototype);
