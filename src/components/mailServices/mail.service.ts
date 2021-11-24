@@ -12,9 +12,9 @@ export type EmailInvitationInfor = {
 	from: {
 		email: string;
 		name: string;
-		avatar: string;
+		avatar?: string;
 	};
-	className: string
+	className: string;
 	inviteLink: string;
 	role: 'student' | 'teacher';
 };
@@ -42,10 +42,10 @@ export const renderInvitationTemplate = async (
 
 	const urlTemplateFile =
 		role === 'student'
-			? './templates/studentInvitation.html'
-			: './templates/studentInvitation.html';
+			? `${__dirname}/templates/studentInvitation.html`
+			: `${__dirname}/templates/teacherInvitation.html`;
 
-	const html = fs.readFileSync(urlTemplateFile);
+	const html = fs.readFileSync(urlTemplateFile).toString();
 	const template = Handlebars.compile(html);
 
 	const templateRendered = template({
@@ -53,7 +53,8 @@ export const renderInvitationTemplate = async (
 		inviterName,
 		inviterAvatar,
 		invitationLink,
-		invitationClassName
+		invitationClassName,
+		domain: config.DOMAIN
 	});
 
 	return templateRendered;
@@ -61,7 +62,7 @@ export const renderInvitationTemplate = async (
 
 export const sendInvitation = async (invitationInfor: EmailInvitationInfor) => {
 	const {
-		avatar: inviterAvatar,
+		avatar: inviterAvatar = `${config.DOMAIN}/images/defaultAvatar.png`,
 		email: inviterEmail,
 		name: inviterName
 	} = invitationInfor.from;
@@ -76,8 +77,8 @@ export const sendInvitation = async (invitationInfor: EmailInvitationInfor) => {
 
 	const subject =
 		role === 'teacher'
-			? `Lời mời cùng dạy lớp ${invitationClassName}`
-			: 'a';
+			? `Lời mời cùng dạy lớp: "${invitationClassName}"`
+			: `Lời mời tham gia lớp học: "${invitationClassName}"`;
 
 	const template = await renderInvitationTemplate({
 		invitationClassName,
@@ -88,10 +89,10 @@ export const sendInvitation = async (invitationInfor: EmailInvitationInfor) => {
 		role
 	});
 
-	const msg = {
+	const msg: sgMail.MailDataRequired = {
 		to: receiverEmail,
-		from: inviterName,
-		subject: subject,
+		from: { email: 'classroom@gradebook.codes', name: inviterName },
+		subject,
 		html: template
 	};
 

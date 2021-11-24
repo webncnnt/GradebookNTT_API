@@ -17,7 +17,7 @@
 				<div aria-label="header-logo">
 					<img
 						alt="gradebook-classroom-logo"
-						src="/images/gradebookLogo.png"
+						src="{{domain}}/images/gradebookLogo.png"
 						height="30px"
 					/>
 				</div>
@@ -27,7 +27,7 @@
 					<div>
 						{{inviterName}} (<a href="mailto:{{inviterEmail}}"
 							>{{inviterEmail}}</a
-						>) đã mời bạn cùng dạy lớp
+						>) đã mời bạn cùng tham gia lớp
 						<a href="{{invitationLink}}">{{invitationClassName}}</a>
 					</div>
 				</div>
@@ -44,7 +44,7 @@
 					<div aria-label="invitation-header">
 						<div
 							style="
-								background-color: gray;
+								background-color: #3b82f6;
 								color: #ffffff;
 								padding: 20px 30px;
 								border-radius: 2px;
@@ -72,7 +72,6 @@
 							aria-label="inviter-information"
 							style="
 								display: flex;
-								flex-direction: row;
 								color: gray;
 								margin-top: 20px;
 								align-items: center;
@@ -88,13 +87,7 @@
 								"
 							/>
 
-							<div
-								style="
-									display: flex;
-									flex-direction: column;
-									margin-left: 10px;
-								"
-							>
+							<div style="margin-left: 10px">
 								<div
 									style="
 										font-size: 11px;
@@ -115,12 +108,13 @@
 						<a
 							role="button"
 							aria-label="button-accept-invitation"
+							href="{{invitationLink}}"
 							style="
 								text-transform: capitalize;
+								text-decoration: none;
 								padding: 8px 25px;
 								border: 1px solid #93c5fd;
 								background-color: #ffffff;
-								cursor: pointer;
 								border-radius: 5px;
 								margin-top: 30px;
 								display: inline-block;
