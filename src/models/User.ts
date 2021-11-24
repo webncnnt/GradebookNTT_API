@@ -52,5 +52,5 @@ User.init(
 		numberPhone: DataTypes.STRING,
 		facebook: DataTypes.STRING
 	},
-	{ sequelize, modelName: 'Users' }
+	{ sequelize, tableName: 'Users' }
 );

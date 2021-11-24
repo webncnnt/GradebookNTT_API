@@ -13,8 +13,8 @@ export const connectDatabase = async (
 
 	if (!sync) return;
 
-	await Class.sync({ force });
 	await User.sync({ force });
+	await Class.sync({ force });
 	await UserClass.sync({ force });
 	await ClassInvitation.sync({ force });
 

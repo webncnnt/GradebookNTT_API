@@ -8,16 +8,18 @@ import {
 	Model,
 	Optional
 } from 'sequelize';
+import { User } from './User';
 
 interface ClassInvitationAttributes {
 	id: number;
 	classId: number;
+	inviterId: number;
 	email: string;
 	role: RoleUserInClass;
 }
 
 interface ClassInvitationCreationAttributes
-	extends Optional<ClassInvitationAttributes, 'id' | 'role' | 'classId'> {}
+	extends Optional<ClassInvitationAttributes, 'id' | 'role'> {}
 
 export class ClassInvitation extends Model<
 	ClassInvitationAttributes,
@@ -25,11 +27,15 @@ export class ClassInvitation extends Model<
 > {
 	id!: number;
 	classId!: number;
+	inviterId!: number;
 	email!: string;
 	role!: RoleUserInClass;
 
 	getClass!: BelongsToGetAssociationMixin<Class>;
 	setClass!: BelongsToSetAssociationMixin<Class, number>;
+
+	getInviter!: BelongsToGetAssociationMixin<User>;
+	setInviter!: BelongsToSetAssociationMixin<User, number>;
 
 	static async existsByClassIdAndEmailAndRole(
 		classId: number,
@@ -52,6 +58,10 @@ ClassInvitation.init(
 			type: DataTypes.INTEGER,
 			references: { model: Class, key: 'id' }
 		},
+		inviterId: {
+			type: DataTypes.INTEGER,
+			references: { model: User, key: 'id' }
+		},
 		email: {
 			type: DataTypes.STRING,
 			allowNull: false
@@ -66,3 +76,6 @@ ClassInvitation.init(
 
 Class.hasMany(ClassInvitation, { foreignKey: 'classId', as: 'invitations' });
 ClassInvitation.belongsTo(Class, { foreignKey: 'classId', as: 'class' });
+
+User.hasMany(ClassInvitation, { foreignKey: 'inviterId', as: 'invitations' });
+ClassInvitation.belongsTo(User, { foreignKey: 'inviterId', as: 'inviter' });

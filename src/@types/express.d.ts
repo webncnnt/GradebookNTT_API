@@ -6,6 +6,7 @@ declare global {
 			email: string;
 			roles: string[];
 			isBlock: boolean;
+			avatar?: string;
 		}
 		interface Request {
 			user?: UserDetails;
