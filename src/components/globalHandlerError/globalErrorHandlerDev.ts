@@ -9,7 +9,7 @@ export const globalErrorHandlerDev: ErrorRequestHandler = (
 	next
 ) => {
 	if (err instanceof NotFoundError) {
-		return res.status(HttpStatusCode.NOT_FOUND).json({
+		res.status(HttpStatusCode.NOT_FOUND).json({
 			message: err.message,
 			stack: err.stack,
 			error: err
@@ -17,14 +17,14 @@ export const globalErrorHandlerDev: ErrorRequestHandler = (
 	}
 
 	if (err instanceof IllegalArgumentError) {
-		return res.status(HttpStatusCode.BAD_REQUEST).json({
+		res.status(HttpStatusCode.BAD_REQUEST).json({
 			message: err.message,
 			stack: err.stack,
 			error: err
 		});
 	}
 
-	return res.status(500).json({
+	res.status(500).json({
 		message: err.message,
 		stack: err.stack,
 		error: err

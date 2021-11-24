@@ -8,19 +8,23 @@ export const globalErrorHandlerProd: ErrorRequestHandler = (
 	res,
 	next
 ) => {
+	console.log(err);
+
 	if (err instanceof NotFoundError) {
-		return res.status(HttpStatusCode.NOT_FOUND).json({
+		res.status(HttpStatusCode.NOT_FOUND).json({
 			message: err.message
 		});
+		return;
 	}
 
 	if (err instanceof IllegalArgumentError) {
-		return res.status(HttpStatusCode.BAD_REQUEST).json({
+		res.status(HttpStatusCode.BAD_REQUEST).json({
 			message: err.message
 		});
+		return;
 	}
 
-	return res.status(500).json({
+	res.status(500).json({
 		message: 'Something went wrong'
 	});
 };

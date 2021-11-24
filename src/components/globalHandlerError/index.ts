@@ -14,5 +14,7 @@ export const globalErrorHandler: ErrorRequestHandler = (
 		globalErrorHandlerProd(err, req, res, next);
 	}
 
-	return globalErrorHandlerDev(err, req, res, next);
+	if (config.NODE_ENV === 'development') {
+		globalErrorHandlerDev(err, req, res, next);
+	}
 };
