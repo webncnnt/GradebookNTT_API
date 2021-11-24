@@ -1,10 +1,11 @@
 import { Class } from '@src/models/Class';
 import { User } from '@src/models/User';
 import { RoleUserInClass, UserClass } from '@src/models/UserClass';
-import { UnauthorizedError } from '@src/utils/appError';
+import { NotFoundError, UnauthorizedError } from '@src/utils/appError';
 import { catchAsyncRequestHandler } from '@src/utils/catchAsyncRequestHandler';
 import { NextFunction, Request, Response } from 'express';
 import { ClassesChecker } from './classes.checker';
+import { ClassesMessageError } from './classes.constant';
 
 const classesChecker = new ClassesChecker(Class, User, UserClass);
 
@@ -18,19 +19,28 @@ export const protect = catchAsyncRequestHandler(
 			);
 
 		const classId = +req.params.id;
-		const clazz = await Class.findByPk(classId);
-		const owner = await clazz?.getOwner();
+		await classesChecker.checkExistClassById(classId);
 
-		if (owner?.id === userId) req.user?.roles.push('owner');
+		const clz = await Class.findByPk(classId);
+		const roles: string[] = [];
 
-		const members = await UserClass.findAll({ where: { id: userId } });
-		members?.forEach(m => {
-			if (m.role === RoleUserInClass.STUDENT)
-				req.user!.roles.push('student');
+		if (clz!.ownerId === userId) {
+			roles.push('owner');
+		}
 
-			if (m.role === RoleUserInClass.TEACHER)
-				req.user!.roles.push('teacher');
+		const members = await clz!.getUserClasses({
+			where: { userId }
 		});
+
+		members.forEach(m => {
+			if (m.role === RoleUserInClass.STUDENT) roles.push('student');
+			if (m.role === RoleUserInClass.TEACHER) roles.push('teacher');
+		});
+
+		if (roles.length === 0)
+			throw new NotFoundError(ClassesMessageError.CLASS_NOT_EXISTS);
+
+		req.user!.roles = roles;
 
 		next();
 	}

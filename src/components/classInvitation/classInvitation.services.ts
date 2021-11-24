@@ -11,6 +11,7 @@ import { RoleUserInClass, UserClass } from '@src/models/UserClass';
 import { config } from '@src/config';
 import { ClassInvitationChecker } from './classInvitation.checker';
 import { ClassesChecker } from '../classes/classes.checker';
+import { EmailInvitationInfor } from '../mailServices/mail.service';
 
 export class ClassInvitationServices {
 	constructor(
@@ -23,6 +24,7 @@ export class ClassInvitationServices {
 
 	async createInvitation(
 		classId: number,
+		inviterId: number,
 		invitationInput: ClassInvitationInput
 	): Promise<ClassInvitation> {
 		await this.classesChecker.checkExistClassById(classId);
@@ -38,7 +40,8 @@ export class ClassInvitationServices {
 
 		const newInvitation = await this.classInvitationRepository.create({
 			email: invitationInput.email,
-			classId: classId,
+			classId,
+			inviterId,
 			role: invitationInput.role
 		});
 
@@ -200,7 +203,7 @@ export class ClassInvitationServices {
 		return `${config.DOMAIN}/api/invites/${clazz.inviteCode}`;
 	}
 
-	async getClassInvitationLink(invitationId: number) {
+	async getClassInvitationLinkById(invitationId: number) {
 		const invitation = await this.classInvitationRepository.findByPk(
 			invitationId
 		);
@@ -209,6 +212,39 @@ export class ClassInvitationServices {
 
 		const clazz = await invitation.getClass();
 
-		return `${config.DOMAIN}/api/invites/access_token/${clazz.inviteCode}?role=${invitation.role}`;
+		return `${config.DOMAIN}/invites/access_token/${clazz.inviteCode}?role=${invitation.role}`;
+	}
+
+	async getClassInvitationLink(invitation: ClassInvitation) {
+		const clazz = await invitation.getClass();
+
+		return `${config.DOMAIN}/invites/access_token/${clazz.inviteCode}?role=${invitation.role}`;
+	}
+
+	async createInvitationEmailInfor(
+		invitationId: number
+	): Promise<EmailInvitationInfor> {
+		const invitation = await this.classInvitationRepository.findByPk(
+			invitationId
+		);
+		const sender = await invitation!.getInviter();
+		const clazz = await invitation!.getClass();
+
+		const inviteLink = await this.getClassInvitationLink(invitation!);
+		const role = invitation!.role === 0 ? 'student' : 'teacher';
+
+		return {
+			from: {
+				avatar: sender.avatar || undefined,
+				email: sender.email,
+				name: sender.fullname
+			},
+			to: {
+				email: invitation!.email
+			},
+			className: clazz.clsName,
+			role,
+			inviteLink
+		};
 	}
 }

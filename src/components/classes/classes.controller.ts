@@ -61,44 +61,19 @@ export class ClassesController {
 			const classId = +req.params.id;
 			const invitationInput = req.body as ClassInvitationInput;
 
-			const invitationDto =
+			const invitation =
 				await this.classesInvitationService.createInvitation(
 					classId,
+					req.user!.id,
 					invitationInput
 				);
 
-			const inviteUrl =
-				await this.classesInvitationService.getClassInvitationLink(
-					invitationDto.id!
+			const invitationEmailInfor =
+				await this.classesInvitationService.createInvitationEmailInfor(
+					invitation.id
 				);
 
-			console.log(inviteUrl);
-			// send email
-			const _class = await Class.findOne({
-				where: {
-					id: classId
-				}
-			});
-			const clsName = _class?.clsName == undefined ? '' : _class?.clsName;
-			let invitationInfo: EmailInvitationInfor = {
-				to: {
-					email: invitationDto.email
-				},
-				from: {
-					email: 'req.user.email',
-					name: 'req.user.name',
-					avatar: 'req.user.avatar'
-				},
-				className: clsName,
-				inviteLink: inviteUrl,
-				role: invitationDto.role == 0 ? 'student' : 'teacher'
-			};
-			const isSuccess = await sendInvitation(invitationInfo);
-			if (isSuccess) {
-				console.log('Send email successfully.');
-			} else {
-				console.log('Send email faild.');
-			}
+			const result = await sendInvitation(invitationEmailInfor);
 
 			res.status(HttpStatusCode.CREATED).json({
 				status: 'success'
