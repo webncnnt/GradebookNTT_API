@@ -170,11 +170,7 @@ export class ClassInvitationServices {
 		const createdInvitation =
 			await clazz!.findClassInvitationByRoleAndEmail(role, userEmail);
 
-		await this.classInvitationChecker.checkUserEmailMatchInvitationEmail(
-			userEmail,
-			createdInvitation!.email
-		);
-
+		console.log(createdInvitation);
 		await this.classesChecker.checkExistsUserInClass(
 			user!.id,
 			clazz!.id,
