@@ -78,10 +78,7 @@ export class ClassInvitationController {
 			const inviteCode = req.params.inviteCode;
 			const role = req.query.role ? +req.query.role : undefined;
 
-			console.log(req.query);
-			console.log(role);
-
-			if (!role)
+			if (role !== null || role !== undefined)
 				throw new IllegalArgumentError('Cannot find any invitations');
 
 			await this.classInvitationServices.joinToClassByAccessToken(
