@@ -11,6 +11,7 @@ import emailRouter from './components/mailServices';
 import classesRouter from '@components/classes';
 import classInvitationRouter from '@components/classInvitation';
 import usercontentRouter from '@components/usercontent';
+import path from 'path';
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(cookieParser());
 
-app.use(express.static('/public'));
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(
 	cors({
