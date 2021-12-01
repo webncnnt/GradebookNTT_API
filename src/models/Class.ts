@@ -19,8 +19,9 @@ import { HasManySetAssociationsMixin } from 'sequelize';
 import { Model, Optional } from 'sequelize';
 import { DataTypes } from 'sequelize';
 import { ClassInvitation } from './ClassInvitation';
+import { GradeAssignment } from './GradeAssignment';
 import { User } from './User';
-import { RoleUserInClass, UserClass } from './UserClass';
+import { UserClass } from './UserClass';
 
 export enum ClassStatus {
 	BLOCK = 0,
@@ -91,6 +92,14 @@ export class Class extends Model<ClassAttributes, ClassCreationAttributes> {
 	hasUserClass!: HasManyCreateAssociationMixin<UserClass>;
 	addUserClass!: HasManyAddAssociationMixin<UserClass, number>;
 	removeUserClass!: HasManyRemoveAssociationMixin<UserClass, number>;
+
+	getGradeAssignments!: HasManyGetAssociationsMixin<GradeAssignment>;
+	createGradeAssignment!: HasManyCreateAssociationMixin<GradeAssignment>;
+	addGradeAssignment!: HasManyAddAssociationMixin<GradeAssignment, number>;
+	removeGradeAssignment!: HasManyRemoveAssociationMixin<
+		GradeAssignment,
+		number
+	>;
 
 	static async findAllMembersInClassByUserId(
 		classId: number,
