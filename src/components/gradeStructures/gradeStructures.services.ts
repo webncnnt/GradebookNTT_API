@@ -51,7 +51,7 @@ export class GradeStructureServices {
 
 		gradeAssignment.title = title || gradeAssignment.title;
 		gradeAssignment.pos = pos || gradeAssignment.pos;
-		gradeAssignment.score = pos || gradeAssignment.score;
+		gradeAssignment.score = score || gradeAssignment.score;
 
 		const updatedGradeAssignment = await gradeAssignment.save();
 
