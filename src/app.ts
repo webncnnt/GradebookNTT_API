@@ -23,7 +23,11 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(
 	cors({
-		origin: ['http://localhost:3000', 'http://locahost:8000'],
+		origin: [
+			'http://localhost:3000',
+			'http://locahost:8000',
+			'https://gallant-mcclintock-c1632a.netlify.app'
+		],
 		credentials: true
 	})
 );
