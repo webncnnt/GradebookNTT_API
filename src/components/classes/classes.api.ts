@@ -10,6 +10,7 @@ import { ClassInvitationServices } from '../classInvitation/classInvitation.serv
 import { ClassesChecker } from './classes.checker';
 import { ClassInvitationChecker } from '../classInvitation/classInvitation.checker';
 import { ClassesCreator } from './classes.creator';
+import gradeStructureRouter from './../gradeStructures/';
 
 const router = Router();
 
@@ -53,6 +54,8 @@ router.use(
 	classesMiddleware.verifyExistsClass,
 	classesMiddleware.protect
 );
+
+router.use('/:id/gradeStructures', gradeStructureRouter);
 
 router
 	.route('/:id/invitations')

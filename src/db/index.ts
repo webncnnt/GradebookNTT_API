@@ -1,6 +1,7 @@
 import sequelize from '@src/db/sequelize';
 import { Class } from '@src/models/Class';
 import { ClassInvitation } from '@src/models/ClassInvitation';
+import { GradeAssignment } from '@src/models/GradeAssignment';
 import { User } from '@src/models/User';
 import { UserClass } from '@src/models/UserClass';
 
@@ -17,6 +18,7 @@ export const connectDatabase = async (
 	await Class.sync({ force });
 	await UserClass.sync({ force });
 	await ClassInvitation.sync({ force });
+	await GradeAssignment.sync({ force });
 
 	console.log('Sync tables successfully');
 };
