@@ -3,6 +3,7 @@ import { Class } from '@src/models/Class';
 import { ClassInvitation } from '@src/models/ClassInvitation';
 import { GradeAssignment } from '@src/models/GradeAssignment';
 import { Student } from '@src/models/Student';
+import { StudentGrade } from '@src/models/StudentGrade';
 import { User } from '@src/models/User';
 import { UserClass } from '@src/models/UserClass';
 
@@ -21,6 +22,7 @@ export const connectDatabase = async (
 	await ClassInvitation.sync({ force });
 	await GradeAssignment.sync({ force });
 	await Student.sync({ force });
+	await StudentGrade.sync({ force });
 	console.log('Sync tables successfully');
 };
 
