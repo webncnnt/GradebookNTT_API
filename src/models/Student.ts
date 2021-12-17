@@ -10,7 +10,7 @@ import { User } from './User';
 
 interface StudentAttributes {
 	id: number;
-	studentId: number;
+	studentId: string;
 	userId: number;
 	fullName: string;
 }
@@ -22,7 +22,7 @@ export class Student extends Model<
 	StudentCreationAttributes
 > {
 	id!: number;
-	studentId!: number;
+	studentId!: string;
 	userId!: number;
 	fullName!: string;
 
@@ -38,7 +38,7 @@ Student.init(
 			primaryKey: true
 		},
 		studentId: {
-			type: DataTypes.INTEGER
+			type: DataTypes.STRING
 		},
 		userId: {
 			type: DataTypes.INTEGER
