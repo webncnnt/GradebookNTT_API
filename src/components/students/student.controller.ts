@@ -1,5 +1,6 @@
 import { saveStudent } from './student.model';
 import { findUserIdByStudentId } from '@src/auth/users.model';
+import { saveStudentgrade } from './grade.model';
 
 export interface IHash {
 	[details: number]: string;
@@ -20,3 +21,7 @@ export const uploadStudent = async (students: any) => {
 	}
     return hashMap;
 };
+
+export const inputGrade = async(studentId: string, score: number, assignmentId: number)=>{
+	await saveStudentgrade(studentId, score, assignmentId);
+}
