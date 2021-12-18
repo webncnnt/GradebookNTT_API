@@ -13,11 +13,16 @@ jobs:
                 node-version: [14.x]
 
         steps:
+            - name: checkout
             - uses: actions/checkout@v2
+
             - name: Use Node.js ${{matrix.node-version}}
               uses: actions/setup-node@v1
               with:
                   node-version: ${{matrix.node-version}}
+
+            - name: Add remote origin
+              run: git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
 
             - name: Create .env file
               shell: bash
@@ -29,6 +34,8 @@ jobs:
                   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
                   DB_PORT: ${{ secrets.DB_PORT }}
                   DB_NAME: ${{ secrets.DB_NAME }}
+                  HEROKU_API_KEY: { { secrets.HEROKU_API_KEY } }
+                  HEROKU_APP_NAME: { { secrets.HEROKU_APP_NAME } }
                   CLOUDINARY_FOLDER_AVATAR: ${{ secrets.CLOUDINARY_FOLDER_AVATAR }}
                   CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
                   CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
@@ -45,6 +52,8 @@ jobs:
                   echo DB_PASSWORD="$DB_PASSWORD" >> .env
                   echo DB_PORT="$DB_PORT" >> .env
                   echo DB_NAME="$DB_NAME" >> .env
+                  echo HEROKU_API_KEY="$HEROKU_API_KEY" >> .env
+                  echo HEROKU_APP_NAME="$HEROKU_APP_NAME" >> .env 
                   echo CLOUDINARY_FOLDER_AVATAR="$CLOUDINARY_FOLDER_AVATAR" >> .env
                   echo CLOUDINARY_CLOUD_NAME="$CLOUDINARY_CLOUD_NAME" >> .env
                   echo CLOUDINARY_API_KEY:="$CLOUDINARY_API_KEY:" >> .env
@@ -52,6 +61,6 @@ jobs:
                   echo SENDGRID_API_KEY="$SENDGRID_API_KEY" >> .env
                   echo DOMAIN="$DOMAIN" >> .env
 
-            - run: npm ci
-            - run: npm run build
-            - run: pm2 startOrRestart ecosystem.config.js --env production
+            # - run: npm ci
+            # - run: npm run build
+            # - run: pm2 startOrRestart ecosystem.config.js --env production

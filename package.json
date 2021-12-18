@@ -22,6 +22,7 @@
 		"nanoid": "^3.1.30",
 		"pg": "^8.7.1",
 		"pg-hstore": "^2.3.4",
+		"pm2": "^5.1.2",
 		"reflect-metadata": "^0.1.13",
 		"sequelize": "^6.9.0",
 		"sequelize-cli": "^6.3.0",
@@ -40,7 +41,7 @@
 	"scripts": {
 		"dev": "nodemon -r tsconfig-paths/register src/server.ts -e ts",
 		"build": "tsc --build",
-		"start": "ts-node -r tsconfig-paths/register src/server.ts",
+		"start": "pm2-runtime start ecosystem.config.js --env production",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
