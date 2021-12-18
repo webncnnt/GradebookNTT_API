@@ -34,8 +34,8 @@ jobs:
                   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
                   DB_PORT: ${{ secrets.DB_PORT }}
                   DB_NAME: ${{ secrets.DB_NAME }}
-                  HEROKU_API_KEY: { { secrets.HEROKU_API_KEY } }
-                  HEROKU_APP_NAME: { { secrets.HEROKU_APP_NAME } }
+                  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+                  HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
                   CLOUDINARY_FOLDER_AVATAR: ${{ secrets.CLOUDINARY_FOLDER_AVATAR }}
                   CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
                   CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
