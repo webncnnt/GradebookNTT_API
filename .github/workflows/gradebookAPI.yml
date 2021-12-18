@@ -6,7 +6,7 @@ on:
         branches: [main]
 jobs:
     Gradebook-API-Actions:
-        runs-on: self-hosted
+        runs-on: ubuntu-latest
 
         strategy:
             matrix:
