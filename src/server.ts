@@ -6,8 +6,6 @@ import { StudentGrade } from './models/StudentGrade';
 
 connectDatabase(true, false).then(() => {
 	console.log('Setup database successful');
-	console.log(Student.prototype);
-	console.log(StudentGrade.prototype);
 });
 
 app.listen(config.PORT, () => {

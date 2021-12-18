@@ -1,3 +1,4 @@
+import { Student } from './../models/Student';
 import database from '@src/db';
 import { User } from '@src/models/User';
 import sequelize from 'sequelize';
@@ -57,3 +58,14 @@ export const findUserByStudentIdAndUserId = async (
 	
 	return user;
 };
+
+export const findUserIdByStudentId = async(studentId: string) =>{
+	const user = await User.findOne({
+		where: {
+			studentId: studentId
+		}
+	});
+	if(user == null || user == undefined)
+		return null;
+	return user?.id;
+}

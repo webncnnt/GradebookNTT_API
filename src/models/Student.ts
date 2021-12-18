@@ -11,7 +11,7 @@ import { Class } from './Class';
 
 interface StudentAttributes {
 	id: number;
-	studentId: number;
+	studentId: string;
 	classId: number;
 	userId: number;
 	fullName: string;
@@ -25,7 +25,7 @@ export class Student extends Model<
 > {
 	id!: number;
 	classId!: number;
-	studentId!: number;
+	studentId!: string;
 	userId!: number;
 	fullName!: string;
 
@@ -47,7 +47,7 @@ Student.init(
 			type: DataTypes.INTEGER
 		},
 		studentId: {
-			type: DataTypes.INTEGER
+			type: DataTypes.STRING
 		},
 		userId: {
 			type: DataTypes.INTEGER

@@ -7,6 +7,7 @@ import router from './auth/auth.routes';
 import { isAuth } from './auth/auth.middleware';
 import profileRouter from './components/profile/profile.route';
 import emailRouter from './components/mailServices';
+import studentRouter from './components/students/student.route';
 
 import classesRouter from '@components/classes';
 import classInvitationRouter from '@components/classInvitation';
@@ -49,6 +50,7 @@ app.use(`${API_PREFIX}/upload`, usercontentRouter);
 app.use('/api/auth', router);
 app.use('/api/profile', isAuth, profileRouter);
 app.use('/api/email', emailRouter);
+app.use('/api/students', studentRouter);
 
 //test about  validation of access token
 // app.use('/api/profile', isAuth, async (req: any, res) => {

@@ -11,7 +11,7 @@ import { Student } from './Student';
 
 interface StudentGradeAttributes {
 	id: number;
-	studentNumber: number;
+	studentId: string;
 	gradeAssignmentId: number;
 	score: number;
 }
@@ -24,7 +24,7 @@ export class StudentGrade extends Model<
 	StudentGradeCreationAttributes
 > {
 	id!: number;
-	studentNumber!: number;
+	studentId!: string;
 	gradeAssignmentId!: number;
 	score!: number;
 
@@ -41,8 +41,8 @@ StudentGrade.init(
 			autoIncrement: true,
 			primaryKey: true
 		},
-		studentNumber: {
-			type: DataTypes.INTEGER
+		studentId: {
+			type: DataTypes.STRING
 		},
 		gradeAssignmentId: {
 			type: DataTypes.INTEGER
