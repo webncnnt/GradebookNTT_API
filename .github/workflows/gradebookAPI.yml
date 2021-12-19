@@ -1,7 +1,10 @@
 name: Actions for Gradebook Project
 on:
     push:
-        branches: [main]
+        branches:
+            - main
+            - test-deploy
+
     pull_request:
         branches: [main]
 jobs:
@@ -44,22 +47,15 @@ jobs:
                   DOMAIN: ${{ secrets.DOMAIN }}
 
               run: |
-                  touch .env
-                  echo NODE_ENV="$NODE_ENV" >> .env
-                  echo PORT="$PORT" >> .env
-                  echo DB_HOST="$DB_HOST" >> .env
-                  echo DB_USERNAME="$DB_USERNAME" >> .env
-                  echo DB_PASSWORD="$DB_PASSWORD" >> .env
-                  echo DB_PORT="$DB_PORT" >> .env
-                  echo DB_NAME="$DB_NAME" >> .env
-                  echo HEROKU_API_KEY="$HEROKU_API_KEY" >> .env
-                  echo HEROKU_APP_NAME="$HEROKU_APP_NAME" >> .env 
-                  echo CLOUDINARY_FOLDER_AVATAR="$CLOUDINARY_FOLDER_AVATAR" >> .env
-                  echo CLOUDINARY_CLOUD_NAME="$CLOUDINARY_CLOUD_NAME" >> .env
-                  echo CLOUDINARY_API_KEY:="$CLOUDINARY_API_KEY:" >> .env
-                  echo CLOUDINARY_API_SECRET="$CLOUDINARY_API_SECRET" >> .env
-                  echo SENDGRID_API_KEY="$SENDGRID_API_KEY" >> .env
-                  echo DOMAIN="$DOMAIN" >> .env
-
-            - name: Ca
-              
+                  heroku config:set NODE_ENV="$NODE_ENV"
+                  heroku config:set PORT="$PORT"
+                  heroku config:set DB_HOST="$DB_HOST"
+                  heroku config:set DB_USERNAME="$DB_USERNAME"
+                  heroku config:set DB_PASSWORD="$DB_PASSWORD"
+                  heroku config:set DB_PORT="$DB_PORT"
+                  heroku config:set CLOUDINARY_FOLDER_AVATAR="$CLOUDINARY_FOLDER_AVATAR"
+                  heroku config:set CLOUDINARY_CLOUD_NAME="$CLOUDINARY_CLOUD_NAME"
+                  heroku config:set CLOUDINARY_API_KEY="$CLOUDINARY_API_KEY"
+                  heroku config:set CLOUDINARY_API_SECRET="$CLOUDINARY_API_SECRET"
+                  heroku config:set SENDGRID_API_KEY="$SENDGRID_API_KEY"
+                  heroku config:set DOMAIN="$DOMAIN"
