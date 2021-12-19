@@ -60,3 +60,6 @@ jobs:
                   echo CLOUDINARY_API_SECRET="$CLOUDINARY_API_SECRET" >> .env
                   echo SENDGRID_API_KEY="$SENDGRID_API_KEY" >> .env
                   echo DOMAIN="$DOMAIN" >> .env
+
+            - name: Ca
+              
