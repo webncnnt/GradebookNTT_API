@@ -47,15 +47,18 @@ jobs:
                   DOMAIN: ${{ secrets.DOMAIN }}
 
               run: |
-                  heroku config:set NODE_ENV="$NODE_ENV"
-                  heroku config:set PORT="$PORT"
-                  heroku config:set DB_HOST="$DB_HOST"
-                  heroku config:set DB_USERNAME="$DB_USERNAME"
-                  heroku config:set DB_PASSWORD="$DB_PASSWORD"
-                  heroku config:set DB_PORT="$DB_PORT"
-                  heroku config:set CLOUDINARY_FOLDER_AVATAR="$CLOUDINARY_FOLDER_AVATAR"
-                  heroku config:set CLOUDINARY_CLOUD_NAME="$CLOUDINARY_CLOUD_NAME"
-                  heroku config:set CLOUDINARY_API_KEY="$CLOUDINARY_API_KEY"
-                  heroku config:set CLOUDINARY_API_SECRET="$CLOUDINARY_API_SECRET"
-                  heroku config:set SENDGRID_API_KEY="$SENDGRID_API_KEY"
-                  heroku config:set DOMAIN="$DOMAIN"
+                  heroku config:set NODE_ENV="$NODE_ENV" -a "$HEROKU_APP_NAME"
+                  heroku config:set PORT="$PORT" -a "$HEROKU_APP_NAME"
+                  heroku config:set DB_HOST="$DB_HOST" -a "$HEROKU_APP_NAME"
+                  heroku config:set DB_USERNAME="$DB_USERNAME" -a "$HEROKU_APP_NAME"
+                  heroku config:set DB_PASSWORD="$DB_PASSWORD" -a "$HEROKU_APP_NAME"
+                  heroku config:set DB_PORT="$DB_PORT" -a "$HEROKU_APP_NAME"
+                  heroku config:set CLOUDINARY_FOLDER_AVATAR="$CLOUDINARY_FOLDER_AVATAR" -a "$HEROKU_APP_NAME"
+                  heroku config:set CLOUDINARY_CLOUD_NAME="$CLOUDINARY_CLOUD_NAME" -a "$HEROKU_APP_NAME"
+                  heroku config:set CLOUDINARY_API_KEY="$CLOUDINARY_API_KEY" -a "$HEROKU_APP_NAME"
+                  heroku config:set CLOUDINARY_API_SECRET="$CLOUDINARY_API_SECRET" -a "$HEROKU_APP_NAME"
+                  heroku config:set SENDGRID_API_KEY="$SENDGRID_API_KEY" -a "$HEROKU_APP_NAME"
+                  heroku config:set DOMAIN="$DOMAIN" -a "$HEROKU_APP_NAME"
+
+            - name: Deploy to heroku
+              run: git push heroku
