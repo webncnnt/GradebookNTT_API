@@ -39,7 +39,7 @@ studentRouter.post('/inputGrade', (req,res,next)=>{
     });
 })
 
-studentRouter.put('/inputGrade', (req,res,next)=>{
+studentRouter.put('/updateGrade', (req,res,next)=>{
     const studentId = req.body.studentId;
     const score = req.body.score;
     const assignmentId = req.body.assignmentId;
