@@ -59,6 +59,4 @@ jobs:
                   heroku config:set DOMAIN="$DOMAIN" -a "$HEROKU_APP_NAME"
 
             - name: Deploy to heroku
-              run: |
-                  git pull heroku main
-                  git push heroku main
+              run: git push -f heroku HEAD:main
