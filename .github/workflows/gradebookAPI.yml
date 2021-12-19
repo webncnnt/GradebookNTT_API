@@ -61,4 +61,4 @@ jobs:
                   heroku config:set DOMAIN="$DOMAIN" -a "$HEROKU_APP_NAME"
 
             - name: Deploy to heroku
-              run: git push heroku --force
+              run: git push --force heroku `git subtree split --prefix server HEAD`:master
