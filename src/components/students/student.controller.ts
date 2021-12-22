@@ -69,6 +69,11 @@ export const markFinalizeGrade = async (assignmentId: number) =>{
 }
 
 export const updateGrade = async(studentId: string, score: number, assignmentId: number)=>{
-	
+	const assign = await findAssignmentById(assignmentId);
+	const student = await findStudentByStudentId(studentId);
+
+	if(assign == null || student == null)
+		return false;
 	await updateGradeStudent(studentId, score, assignmentId);
+	return true;
 }
