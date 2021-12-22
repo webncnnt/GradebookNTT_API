@@ -82,7 +82,6 @@ export class GradeController {
 			const studentId = req.params.studentId;
 			const updateGradeInput = req.body as UpdateStudentGradeInput;
 
-			console.log(assignmentId);
 			const studentGrade = await this.gradeServices.updateStudentGrade(
 				studentId,
 				assignmentId,

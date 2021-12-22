@@ -29,7 +29,8 @@ app.use(
 		origin: [
 			'http://localhost:3000',
 			'http://locahost:8000',
-			'https://gallant-mcclintock-c1632a.netlify.app'
+			'https://gallant-mcclintock-c1632a.netlify.app',
+			'https://optimistic-ptolemy-22e552.netlify.app/'
 		],
 		credentials: true
 	})
