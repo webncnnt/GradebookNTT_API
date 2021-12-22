@@ -64,4 +64,7 @@ Student.belongsTo(Class, {
 	targetKey: 'id',
 	as: 'class'
 });
+
+Class.hasMany(Student)
+
 Student.belongsTo(User, { foreignKey: 'userId', targetKey: 'id', as: 'user' });

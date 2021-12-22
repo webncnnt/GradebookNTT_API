@@ -127,7 +127,7 @@ export class GradeServices {
 
 		const studentsInClass = await this.studentRepository.findAll({
 			where: {
-				classId: id
+				classId: clazz.id
 			}
 		});
 
@@ -152,6 +152,8 @@ export class GradeServices {
 		gradeAssignmentId: number,
 		updatedInput: UpdateStudentGradeInput
 	) {
+		console.log(studentId, gradeAssignmentId);
+
 		const studentGrade = await this.studentGradeRepository.findOne({
 			where: {
 				studentId,
@@ -159,10 +161,16 @@ export class GradeServices {
 			}
 		});
 
-		if (studentGrade == null)
-			throw new NotFoundError('Grade of student does not exists');
-
 		const { score } = updatedInput;
+
+		if (studentGrade == null) {
+			return await this.studentGradeRepository.create({
+				gradeAssignmentId,
+				score: score ?? 0,
+				studentId: studentId
+			});
+		}
+
 		studentGrade.score = score ?? studentGrade.score;
 		await studentGrade.save();
 
