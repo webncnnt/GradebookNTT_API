@@ -46,7 +46,7 @@ export const markFinalizeGrade = async (assignmentId: number) =>{
 	
 	 const msg = {
 		to: emailList,
-		from: { email: 'huynhthinhi206@gmail.com'},
+		from: { email: 'classroom@gradebook.codes'},
 		subject: `Grade for assignment ${title}'s ${className} class`,
 		html: `<h3>Got marks for assignment ${title} at ${className} class</h3> <a href = 'abc.com'>
 		Click here to view scores</a>`
