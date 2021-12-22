@@ -28,10 +28,19 @@ studentRouter.post('/inputGrade', (req,res,next)=>{
     const studentId = req.body.studentId;
     const score = req.body.score;
     const assignmentId = req.body.assignmentId;
-    inputGrade(studentId, parseFloat(score), assignmentId).then((result) => {
-        res.status(200).json({
-            message: "Input grade successfully"
-        })
+
+    inputGrade(studentId, parseFloat(score),parseInt(assignmentId)).then((result) => {
+        if(result == false){
+            res.status(400).json({
+                message: "Bad request"
+            })
+        }
+        else{
+            res.status(200).json({
+                message: "Input grade successfully"
+            })
+        }
+       
     }).catch((err) => {
         res.status(500).json({
             message:  "Error internal server!"

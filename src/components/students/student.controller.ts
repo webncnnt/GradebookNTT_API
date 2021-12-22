@@ -1,9 +1,8 @@
-import { deleteDataStudent, findStudentsByClassId, saveStudent } from './student.model';
+import { deleteDataStudent, findStudentsByClassId, saveStudent, findStudentByStudentId } from './student.model';
 import { findUserIdByStudentId } from '@src/auth/users.model';
 import { saveStudentgrade, updateGradeStudent } from './grade.model';
 import { findAssignmentById, findClassNameByClassId, findEmailStudentByClassId } from './student.model';
 import { sendEmail } from '../mailServices/mail.service';
-
 
 export interface IHash {
 	[details: number]: string;
@@ -29,7 +28,14 @@ export const uploadStudent = async (students: any, classId: number) => {
 };
 
 export const inputGrade = async(studentId: string, score: number, assignmentId: number)=>{
+
+	const assign = await findAssignmentById(assignmentId);
+	const student = await findStudentByStudentId(studentId);
+
+	if(assign == null || student == null)
+		return false;
 	await saveStudentgrade(studentId, score, assignmentId);
+	return true;
 }
 
 export const getStudentsByClassId = async(classId: number) =>{
