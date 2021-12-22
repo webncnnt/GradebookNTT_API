@@ -65,3 +65,14 @@ export const deleteDataStudent = () =>{
     const strQuery = `delete from "Students"`;
     database.query(strQuery)
 }
+
+export const findStudentByStudentId = async(studentId: string)=>{
+    const student = await Student.findOne({
+        where: {
+            studentId: studentId
+        }
+    })
+
+    return student;
+
+}

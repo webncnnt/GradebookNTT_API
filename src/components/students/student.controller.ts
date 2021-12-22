@@ -1,8 +1,9 @@
-import { deleteDataStudent, findStudentsByClassId, saveStudent } from './student.model';
+import { deleteDataStudent, findStudentsByClassId, saveStudent, findStudentByStudentId } from './student.model';
 import { findUserIdByStudentId } from '@src/auth/users.model';
 import { saveStudentgrade, updateGradeStudent } from './grade.model';
 import { findAssignmentById, findClassNameByClassId, findEmailStudentByClassId } from './student.model';
 import { sendEmail } from '../mailServices/mail.service';
+import { config } from '@src/config';
 
 
 export interface IHash {
@@ -29,7 +30,14 @@ export const uploadStudent = async (students: any, classId: number) => {
 };
 
 export const inputGrade = async(studentId: string, score: number, assignmentId: number)=>{
+
+	const assign = await findAssignmentById(assignmentId);
+	const student = await findStudentByStudentId(studentId);
+
+	if(assign == null || student == null)
+		return false;
 	await saveStudentgrade(studentId, score, assignmentId);
+	return true;
 }
 
 export const getStudentsByClassId = async(classId: number) =>{
@@ -47,8 +55,8 @@ export const markFinalizeGrade = async (assignmentId: number) =>{
 	 const msg = {
 		to: emailList,
 		from: { email: 'classroom@gradebook.codes'},
-		subject: `Grade for assignment ${title}'s ${className} class`,
-		html: `<h3>Got marks for assignment ${title} at ${className} class</h3> <a href = 'abc.com'>
+		subject: `Grade for assignment ${title} of ${className} class`,
+		html: `<h3>Got marks for assignment ${title} of ${className} class</h3> <a href = '${config.DOMAIN}/class-detail/${assignment.classId}/scores'>
 		Click here to view scores</a>`
 	};
 
@@ -63,6 +71,11 @@ export const markFinalizeGrade = async (assignmentId: number) =>{
 }
 
 export const updateGrade = async(studentId: string, score: number, assignmentId: number)=>{
-	
+	const assign = await findAssignmentById(assignmentId);
+	const student = await findStudentByStudentId(studentId);
+
+	if(assign == null || student == null)
+		return false;
 	await updateGradeStudent(studentId, score, assignmentId);
+	return true;
 }
