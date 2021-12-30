@@ -6,10 +6,16 @@ import sequelize from 'sequelize';
 const Op = sequelize.Op;
 
 export const findByEmail = async (email: string) => {
-	const strQuery = `select * from "Users" where email = '${email}'`;
-	const result = await database.query(strQuery);
+	const user = User.findOne({
+		where: {
+			email : email
+		}
+	})
+	// const strQuery = `select * from "Users" where email = '${email}'`;
+	// const result = await database.query(strQuery);
 
-	return result[0][0];
+	// return result[0][0];
+	return user;
 };
 
 export const createUser = async (

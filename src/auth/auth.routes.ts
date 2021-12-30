@@ -1,10 +1,11 @@
 import { findUserById, createUser } from './users.model';
-import { register, login, changePassWord } from './auth.controllers';
+import { register, login, changePassWord, resetPassword } from './auth.controllers';
 import { config } from '@src/config';
 import express from 'express';
 const router = express.Router();
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(config.CLIENT_ID);
+
 
 router.post('/register', (req, res, next) => {
 	const fullname = req.body.fullname;
@@ -93,4 +94,27 @@ router.post("/google", async (req, res) => {
 	});
 
 })
+
+router.post('/forgot', (req, res)=>{
+	const email = req.body.email;
+	resetPassword(email).then((result) => {
+		if(result){
+			res.status(200).json({
+				message: 'Reset password successfully.'
+			})
+		}
+		else{
+			res.status(404).json({
+				message: `Email doesn't exist!`
+			})
+		}
+	}).catch((err) => {
+		console.log(err);
+		
+		res.status(500).json({
+			message: 'Error internal server'
+		})
+	});
+})
+
 export default router;
