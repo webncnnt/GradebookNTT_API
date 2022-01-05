@@ -1,7 +1,10 @@
 import sequelize from '@src/db/sequelize';
 import { Class } from '@src/models/Class';
 import { ClassInvitation } from '@src/models/ClassInvitation';
+import { CommentReview } from '@src/models/CommentReview';
 import { GradeAssignment } from '@src/models/GradeAssignment';
+import { Notification } from '@src/models/Notification';
+import { Review } from '@src/models/Review';
 import { Student } from '@src/models/Student';
 import { StudentGrade } from '@src/models/StudentGrade';
 import { User } from '@src/models/User';
@@ -23,6 +26,10 @@ export const connectDatabase = async (
 	await GradeAssignment.sync({ force });
 	await Student.sync({ force });
 	await StudentGrade.sync({ force });
+	await CommentReview.sync({ force });
+	await Review.sync({ force });
+	await Notification.sync({ force });
+
 	console.log('Sync tables successfully');
 };
 
