@@ -24,7 +24,7 @@ export class StudentGrade extends Model<
 	StudentGradeCreationAttributes
 > {
 	id!: number;
-	studentId!: string;
+	studentId!: string; //mssv
 	gradeAssignmentId!: number;
 	score!: number;
 
