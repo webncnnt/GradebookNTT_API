@@ -8,7 +8,7 @@ import { Review } from './models/Review';
 import { CommentReview } from './models/CommentReview';
 import { Notification } from './models/Notification';
 
-connectDatabase(false, false).then(() => {
+connectDatabase(true, false).then(() => {
 	console.log('Setup database successful');
 });
 

@@ -47,7 +47,7 @@ Review.init(
 			primaryKey: true
 		},
 		studentId: {
-			type: DataTypes.STRING,
+			type: DataTypes.INTEGER,
 			allowNull: false
 		},
 		assignmentId: {

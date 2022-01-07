@@ -26,8 +26,8 @@ export const connectDatabase = async (
 	await GradeAssignment.sync({ force });
 	await Student.sync({ force });
 	await StudentGrade.sync({ force });
-	await CommentReview.sync({ force });
 	await Review.sync({ force });
+	await CommentReview.sync({ force });
 	await Notification.sync({ force });
 
 	console.log('Sync tables successfully');
