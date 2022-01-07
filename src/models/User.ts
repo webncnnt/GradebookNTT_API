@@ -15,7 +15,7 @@ export class User extends Model {
 	email!: string;
 	password!: string;
 	role!: number;
-	studentId!: number;
+	studentId!: string;
 	avatar!: string | null;
 	status!: boolean; // true: block
 	dob!: Date | null;
