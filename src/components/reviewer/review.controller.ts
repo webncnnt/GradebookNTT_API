@@ -1,4 +1,5 @@
 import { gradeDetailOfAStudent } from './reviewer.model';
+import { addReview } from './reviewer.model';
 
 export const gradeDetail = async (studentId: string) => {
 	const result: any = await gradeDetailOfAStudent(studentId);
@@ -17,3 +18,9 @@ export const gradeDetail = async (studentId: string) => {
     const gradeDetail = [result, {total: totalScore/totalScale}]
 	return gradeDetail;
 };
+
+export const createReview = async (studentId: string, assignmentId: number, expectedScore: number, message: string) =>{
+
+    const result: any = await addReview(studentId, assignmentId, expectedScore, message);
+    return result;
+}
