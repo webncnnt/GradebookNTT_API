@@ -54,11 +54,11 @@ StudentGrade.init(
 	{ sequelize }
 );
 
-StudentGrade.belongsTo(Student, {
-	foreignKey: 'studentNumber',
-	targetKey: 'id',
-	as: 'student'
-});
+// StudentGrade.belongsTo(Student, {
+// 	foreignKey: 'studentNumber',
+// 	targetKey: 'id',
+// 	as: 'student'
+// });
 
 StudentGrade.belongsTo(GradeAssignment, {
 	foreignKey: 'gradeAssignmentId',
