@@ -35,3 +35,13 @@ export const addReview = async (
 
 	return true;
 };
+
+export const findReviewById =async (id: number) => {
+	const review = await Review.findOne({
+		where:{
+			id: id
+		}
+	})
+
+	return review;
+}
