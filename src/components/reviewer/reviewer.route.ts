@@ -4,7 +4,7 @@ import { gradeDetail } from './review.controller';
 import express from 'express';
 const reviewer = express.Router();
 
-
+//View his grade compositions, overall grade
 reviewer.get('/gradeDetail/:studentId', (req, res) => {
 	const studentId = req.params.studentId;
 	gradeDetail(studentId)
@@ -21,6 +21,7 @@ reviewer.get('/gradeDetail/:studentId', (req, res) => {
 		});
 });
 
+//Request a review of each grade composition
 reviewer.post('/requestReview', (req, res)=>{
     //studentId: string, assignmentId: number, expectedScore: number, message: string
     const studentId = req.body.studentId;

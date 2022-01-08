@@ -1,6 +1,7 @@
 import { Review } from "@src/models/Review";
 import db from "@src/db";
 
+//View list of grade reviews requested by students
 export const getAllOfReviews = async ()=>{
     const strQuery = `select RV.id as reviewId, RV."studentId", RV."statusTeacher", RV."statusStudent", 
     RV."expectedScore", RV."message", GA."title", GA."score" as scaleGrade 
@@ -14,6 +15,8 @@ export const getAllOfReviews = async ()=>{
     
 }
 
+//View grade review details: Student, grade composition,
+// current grade, student expectation grade, student explanation
 export const gradeReviewDetail = async (reviewId: number) =>{
 
     const strQuery = `select RV.id as reviewId, RV."studentId", RV."statusTeacher", RV."statusStudent", 
