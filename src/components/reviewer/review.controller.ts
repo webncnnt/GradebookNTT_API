@@ -15,6 +15,7 @@ export const gradeDetail = async (studentId: string) => {
         totalScale += scaleGrade
 	}
 
+	if(result.length == 0)	return null;
     const gradeDetail = [result, {total: totalScore/totalScale}]
 	return gradeDetail;
 };
