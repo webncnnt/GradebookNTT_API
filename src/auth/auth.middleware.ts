@@ -4,7 +4,7 @@ import {
 	verifyToken
 } from './auth.method';
 import { findByEmail } from './users.model';
-import { verifyIdToken } from './auth.method';
+import { verifyIdToken, decodeToken } from './auth.method';
 import { config } from '@src/config';
 import { User } from '@src/models/User';
 import { Request } from 'express';
@@ -66,3 +66,14 @@ export const isAuth = async (req: Request, res: any, next: any) => {
 		return next();
 	}
 };
+
+export const getUserByToken = async(token: string) =>{
+
+	if(token == null) return null;
+
+	const verified:any = decodeToken(token, ACCESS_TOKEN_SECRET);
+	if(verified == null || verified == undefined)	return null;
+	
+	return verified;
+
+}
