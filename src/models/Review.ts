@@ -26,7 +26,7 @@ interface ReviewCreationAttributes extends Optional<ReviewAttributes, 'id'> {}
 
 export class Review extends Model<ReviewAttributes, ReviewCreationAttributes> {
 	id!: number;
-	studentId!: string;
+	studentId!: string; 
 	assignmentId!: number;
 	statusTeacher!: TeacherReviewStatus;
 	statusStudent!: StudentReviewStatus;
@@ -47,7 +47,7 @@ Review.init(
 			primaryKey: true
 		},
 		studentId: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.STRING,
 			allowNull: false
 		},
 		assignmentId: {
@@ -80,8 +80,8 @@ Review.belongsTo(GradeAssignment, {
 	as: 'assignment'
 });
 
-Review.belongsTo(Student, {
-	foreignKey: 'studentId',
-	targetKey: 'id',
-	as: 'student'
-});
+// Review.belongsTo(Student, {
+// 	foreignKey: 'studentId',
+// 	targetKey: 'id',
+// 	as: 'student'
+// });

@@ -24,7 +24,7 @@ export class StudentGrade extends Model<
 	StudentGradeCreationAttributes
 > {
 	id!: number;
-	studentId!: string;
+	studentId!: string; //mssv
 	gradeAssignmentId!: number;
 	score!: number;
 
@@ -54,11 +54,11 @@ StudentGrade.init(
 	{ sequelize }
 );
 
-StudentGrade.belongsTo(Student, {
-	foreignKey: 'studentNumber',
-	targetKey: 'id',
-	as: 'student'
-});
+// StudentGrade.belongsTo(Student, {
+// 	foreignKey: 'studentNumber',
+// 	targetKey: 'id',
+// 	as: 'student'
+// });
 
 StudentGrade.belongsTo(GradeAssignment, {
 	foreignKey: 'gradeAssignmentId',

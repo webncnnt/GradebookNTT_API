@@ -11,8 +11,8 @@ import { User } from './User';
 interface NotificationAttributes {
 	id: number;
 	notifyMessage: string;
-	receiverId: number;
-	senderId: number;
+	receiverId: number; // is userId(teacher or student)
+	senderId: number; //is userId(teacher or student)
 }
 
 interface NotificationCreationAttributes
