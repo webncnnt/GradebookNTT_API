@@ -24,25 +24,42 @@ profileRouter.put('/:id', (req, res, next) => {
 		facebook
 	)
 		.then(updatedUser => {
-			if(updatedUser == null){
+			if (updatedUser == null) {
 				res.status(409).json({
 					message: 'MSSV already exist!'
-				})
-			}
-			else{
+				});
+			} else {
 				res.json({
 					message: 'Update successfully!',
 					profile: updatedUser
-				})
+				});
 			}
-            
-        })
+		})
 		.catch(err => {
+			res.status(400).json({
+				message: 'Bad request.'
+			});
+		});
+});
 
-            res.status(400).json({
-                message: 'Bad request.'
-            })
-        });
+profileRouter.get('/me', (req, res, next) => {
+	getProfile(req.user!.id)
+		.then(profile => {
+			if (profile == null) {
+				res.status(400).json({
+					message: 'Bad request.'
+				});
+			} else {
+				res.json({
+					profile: profile
+				});
+			}
+		})
+		.catch(err => {
+			res.status(400).json({
+				message: 'Bad request.'
+			});
+		});
 });
 
 profileRouter.get('/:id', (req, res, next) => {
