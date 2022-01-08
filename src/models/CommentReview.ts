@@ -13,7 +13,7 @@ interface CommentReviewAttributes {
 	id: number;
 	reviewId: number;
 	message: string;
-	commenterId: string; //userId
+	commenterId: number; //userId
 }
 
 interface CommentReviewCreationAttributes
