@@ -1,3 +1,4 @@
+import { getUserByToken } from './auth.middleware';
 import { findUserById, createUser } from './users.model';
 import { register, login, changePassWord, resetPassword } from './auth.controllers';
 import { config } from '@src/config';
@@ -117,4 +118,23 @@ router.post('/forgot', (req, res)=>{
 	});
 })
 
+router.get('/getUserByToken/:token', (req, res) =>{
+	const token = req.params.token;
+	getUserByToken(token).then((result) => {
+		if(result == null || result == undefined)	res.status(400).json({ message: "Token is invalid!!"})
+		else{
+
+			res.status(200).json(
+				{"user" : result.payload}
+			)
+
+		}
+	
+	}).catch((err) => {
+
+		res.status(500).json({ message: "error at internal server"})
+		console.log("error get User by token");
+		
+	});
+})
 export default router;
