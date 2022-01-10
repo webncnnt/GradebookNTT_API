@@ -13,6 +13,7 @@ import classesRouter from '@components/classes';
 import classInvitationRouter from '@components/classInvitation';
 import usercontentRouter from '@components/usercontent';
 import gradeRouter from './components/grades/';
+import adminRouter from './components/admin/';
 
 import path from 'path';
 
@@ -48,6 +49,7 @@ app.use(`${API_PREFIX}/classes`, classesRouter);
 app.use(`${API_PREFIX}/invites`, classInvitationRouter);
 app.use(`${API_PREFIX}/grades`, gradeRouter);
 app.use(`${API_PREFIX}/upload`, usercontentRouter);
+app.use(`${API_PREFIX}/admin`, adminRouter);
 
 app.use('/api/auth', router);
 app.use('/api/profile', isAuth, profileRouter);

@@ -1,11 +1,10 @@
 import { Class } from '@src/models/Class';
 import { User } from '@src/models/User';
 import { RoleUserInClass, UserClass } from '@src/models/UserClass';
-import { IllegalArgumentError, NotFoundError } from '@src/utils/appError';
 import { nanoid } from 'nanoid';
 import { Op } from 'sequelize';
 import { ClassesChecker } from './classes.checker';
-import { ClassesMessageError, USER_CLASS_PER_PAGE } from './classes.constant';
+import { USER_CLASS_PER_PAGE } from './classes.constant';
 import { ClassesCreator } from './classes.creator';
 import {
 	ClassOverviewDto,
@@ -147,6 +146,24 @@ export class ClassesService {
 		await this.classesChecker.checkExistClassById(id);
 		const clazz = await this.classesRepository.findByPk(id);
 		await clazz!.destroy();
+	}
+
+	async findAndCountAllClass(
+		classId: number,
+		page: number,
+		limit: number
+	): Promise<[ClassOverviewDto[], number]> {
+		const classes = await this.classesRepository.findAll({
+			where: { id: classId },
+			offset: page - 1,
+			limit: limit
+		});
+
+		const count = await this.classesRepository.count();
+		const classOverviewsDto =
+			this.classesCreator.createClassOverviews(classes);
+
+		return [classOverviewsDto, count];
 	}
 }
 

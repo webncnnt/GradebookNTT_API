@@ -22,6 +22,7 @@ export class User extends Model {
 	address!: string | null;
 	numberPhone!: string | null;
 	facebook!: string | null;
+	createAt!: Date;
 
 	static async findUserByEmail(email: string): Promise<User | null> {
 		return await User.findOne({ where: { email } });

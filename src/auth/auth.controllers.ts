@@ -8,7 +8,7 @@ import { findByEmail, findUserById } from './users.model';
 import { createUser } from './users.model';
 
 import bcrypt from 'bcrypt';
-const randomstring = require('randomstring')
+const randomstring = require('randomstring');
 
 const SALT_ROUNDS = 10;
 
@@ -97,19 +97,18 @@ export const changePassWord = async (
 	return false;
 };
 
-export const resetPassword = async(email: string)=>{
+export const resetPassword = async (email: string) => {
 	const user: any = await findByEmail(email);
-	if(user == null){
+	if (user == null) {
 		return false;
-	}
-	else{
+	} else {
 		const newPass = randomstring.generate({
 			length: 5,
 			charset: 'alphabetic'
-		  });
-		  const msg = {
+		});
+		const msg = {
 			to: email,
-			from: { email: 'huynhthinhi206@gmail.com'},
+			from: { email: 'huynhthinhi206@gmail.com' },
 			subject: `Password Reset`,
 			html: `
 			<h3>You are receiving this because you (or someone else) have requested the reset of the password for your account.</h3>
@@ -118,10 +117,10 @@ export const resetPassword = async(email: string)=>{
 		};
 
 		await user.update({
-			password:  bcrypt.hashSync(newPass, SALT_ROUNDS)
-		})
+			password: bcrypt.hashSync(newPass, SALT_ROUNDS)
+		});
 
 		await sendEmail(msg);
 		return true;
 	}
-}
+};
