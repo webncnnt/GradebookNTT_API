@@ -31,3 +31,16 @@ export const gradeReviewDetail = async (reviewId: number) =>{
     
     return result[0];
 }
+
+export const findReviewByReviewId = async(reveiwId: number) =>{
+
+
+    const review :any = await Review.findOne({
+        where: {
+            id: reveiwId
+        },
+    })
+    
+   return review;
+}
+
