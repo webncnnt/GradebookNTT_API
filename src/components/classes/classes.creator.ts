@@ -4,7 +4,8 @@ import {
 	ClassMemberOverviewDto,
 	ClassStudentsOverviewDto,
 	ClassTeachersOverviewDto,
-	ClassOverviewDto
+	ClassOverviewDto,
+	ClassDetailDto
 } from './classes.dto';
 import { mapUserClassToClassMemberOverview } from './classes.mapping';
 
@@ -17,6 +18,20 @@ export class ClassesCreator {
 	async createClassOverviewById(classId: number): Promise<ClassOverviewDto> {
 		const clazz = await this.classRepository.findByPk(classId);
 		return this.createClassOverview(clazz!);
+	}
+
+	async createClassDetailById(classId: number): Promise<ClassDetailDto> {
+		const clazz = await this.classRepository.findByPk(classId);
+
+		const total = await this.userClassRepository.count();
+		const nStudent = await this.userClassRepository.count({
+			where: { classId: classId, role: 0 }
+		});
+		const nTeacher = await this.userClassRepository.count({
+			where: { classId: classId, role: 1 }
+		});
+
+		return this.createClassDetail(clazz!, total, nStudent, nTeacher);
 	}
 
 	createClassOverviews(clazz: Class[]): ClassOverviewDto[] {
@@ -33,6 +48,27 @@ export class ClassesCreator {
 			coverImage: clazz!.coverImage || undefined,
 			description: clazz!.description || undefined,
 			expiredTime: clazz!.expiredTime || undefined
+		};
+	}
+
+	createClassDetail(
+		clazz: Class,
+		total: number,
+		nStudent: number,
+		nTeacher: number
+	): ClassDetailDto {
+		return {
+			id: clazz!.id,
+			className: clazz!.clsName,
+			ownerId: clazz!.ownerId,
+			createDate: clazz!.createdAt,
+			inviteCode: clazz!.inviteCode,
+			coverImage: clazz!.coverImage || undefined,
+			description: clazz!.description || undefined,
+			expiredTime: clazz!.expiredTime || undefined,
+			totalMembers: total,
+			numberOfStudents: nStudent,
+			numberOfTeachers: nTeacher
 		};
 	}
 

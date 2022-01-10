@@ -7,7 +7,8 @@ import { findByEmail } from './users.model';
 import { verifyIdToken, decodeToken } from './auth.method';
 import { config } from '@src/config';
 import { User } from '@src/models/User';
-import { Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { UnauthorizedError } from '@src/utils/appError';
 
 export const isAuth = async (req: Request, res: any, next: any) => {
 	// Lấy access token từ header
@@ -67,13 +68,27 @@ export const isAuth = async (req: Request, res: any, next: any) => {
 	}
 };
 
-export const getUserByToken = async(token: string) =>{
+export const restrictTo = (...roles: string[]) => {
+	return (req: Request, res: Response, next: NextFunction) => {
+		const hasPermission = req.user?.roles.some(role =>
+			roles.includes(role)
+		);
 
-	if(token == null) return null;
+		if (hasPermission) next();
 
-	const verified:any = decodeToken(token, ACCESS_TOKEN_SECRET);
-	if(verified == null || verified == undefined)	return null;
-	
+		if (!hasPermission)
+			next(
+				new UnauthorizedError(
+					'You do not have permission to perform this action'
+				)
+			);
+	};
+};
+export const getUserByToken = async (token: string) => {
+	if (token == null) return null;
+
+	const verified: any = decodeToken(token, ACCESS_TOKEN_SECRET);
+	if (verified == null || verified == undefined) return null;
+
 	return verified;
-
-}
+};

@@ -1,5 +1,3 @@
-import { RoleUserInClass } from '@src/models/UserClass';
-
 export type CreateClassInput = {
 	className: string;
 	coverImage?: string;
@@ -40,4 +38,18 @@ export type ClassOverviewDto = {
 	coverImage?: string;
 	createDate: Date;
 	expiredTime?: Date;
+};
+
+export type ClassDetailDto = {
+	id: number;
+	className: string;
+	ownerId: number;
+	description?: string;
+	inviteCode: string;
+	coverImage?: string;
+	createDate: Date;
+	expiredTime?: Date;
+	totalMembers: number;
+	numberOfStudents: number;
+	numberOfTeachers: number;
 };

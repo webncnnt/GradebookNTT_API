@@ -1,10 +1,6 @@
 import { sendInvitation } from './../mailServices/mail.service';
 import { catchAsyncRequestHandler } from '@src/utils/catchAsyncRequestHandler';
-import {
-	AppError,
-	IllegalArgumentError,
-	UnauthorizedError
-} from '@src/utils/appError';
+import { IllegalArgumentError, UnauthorizedError } from '@src/utils/appError';
 
 import { ClassesService } from './classes.services';
 import { ClassesMessageError, ClassesMessageSuccess } from './classes.constant';
@@ -16,9 +12,6 @@ import { AuthorizeMessageError } from '@src/constant/authorizeError';
 import { NextFunction, Request, Response } from 'express';
 import { ClassInvitationInput } from '../classInvitation/classInvitation.dto';
 import { ClassInvitationServices } from '../classInvitation/classInvitation.services';
-import { RoleUserInClass } from '@src/models/UserClass';
-import { EmailInvitationInfor } from '../mailServices/mail.service';
-import { Class } from '@src/models/Class';
 
 export class ClassesController {
 	private readonly classesService: ClassesService;
