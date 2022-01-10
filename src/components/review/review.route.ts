@@ -2,9 +2,11 @@ import { getAllOfReviews, gradeReviewDetail } from './review.model';
 import express from 'express';
 const reviewRouter = express.Router();
 
-reviewRouter.get('/getListOfReviews', (req, res)=>{
+//get all of reviews of a class
+reviewRouter.get('/getListOfReviews/:classID', (req, res)=>{
 
-    getAllOfReviews().then((result) => {
+    const classId = parseInt(req.params.classID);
+    getAllOfReviews(classId).then((result) => {
       
         res.status(200).json(result);
 

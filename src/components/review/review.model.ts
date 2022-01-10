@@ -2,11 +2,11 @@ import { Review } from "@src/models/Review";
 import db from "@src/db";
 
 //View list of grade reviews requested by students
-export const getAllOfReviews = async ()=>{
+export const getAllOfReviews = async (classId: number)=>{
     const strQuery = `select RV.id as reviewId, RV."studentId", RV."statusTeacher", RV."statusStudent", 
     RV."expectedScore", RV."message", GA."title", GA."score" as scaleGrade 
-    from "review" as RV, "gradeAssignments" as GA 
-    where RV."assignmentId" = GA."id"`;
+    from "review" as RV, "gradeAssignments" as GA
+    where GA."classId" = ${classId} and RV."assignmentId" = GA."id"`;
 
     const result: any = await db.query(strQuery);
     
