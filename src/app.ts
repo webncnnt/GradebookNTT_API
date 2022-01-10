@@ -8,6 +8,9 @@ import { isAuth } from './auth/auth.middleware';
 import profileRouter from './components/profile/profile.route';
 import emailRouter from './components/mailServices';
 import studentRouter from './components/students/student.route';
+import reviewer from './components/reviewer/reviewer.route';
+import commentRouter from './components/comment/comment.route';
+import reviewRouter from './components/review/review.route';
 
 import classesRouter from '@components/classes';
 import classInvitationRouter from '@components/classInvitation';
@@ -55,6 +58,9 @@ app.use('/api/auth', router);
 app.use('/api/profile', isAuth, profileRouter);
 app.use('/api/email', emailRouter);
 app.use('/api/students', studentRouter);
+app.use('/api/reviewer', reviewer)
+app.use('/api/comment', commentRouter);
+app.use('/api/review', reviewRouter);
 
 //test about  validation of access token
 // app.use('/api/profile', isAuth, async (req: any, res) => {
