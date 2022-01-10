@@ -36,9 +36,13 @@ export const updateGradeStudent = async (
 		studentId,
 		assignmentId
 	);
-	gradeStudent?.update({
-		score: score
-	});
+
+	if(gradeStudent != null){
+		gradeStudent?.update({
+			score: score
+		});
+	}
+
 };
 
 export const findAllGradeStudentByClassId = async (
