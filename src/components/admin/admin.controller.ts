@@ -3,6 +3,7 @@ import { NotFoundError } from '@src/utils/appError';
 import { catchAsyncRequestHandler } from '@src/utils/catchAsyncRequestHandler';
 import { Request, Response, NextFunction } from 'express';
 import {
+	AdminsQueryFilter,
 	ClassesQueryFilter,
 	CreateAdminInput,
 	UsersQueryFilter
@@ -108,7 +109,7 @@ export class AdminController {
 
 	getAllAdmins = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
-			const queryFilter: UsersQueryFilter = {};
+			const queryFilter = this.transformAdminsQueryFilter(req.query);
 
 			const [admins, total] =
 				await this.adminServices.findAndCountAllUsers(queryFilter);
@@ -140,6 +141,17 @@ export class AdminController {
 		queryFilter.page = query.page;
 		queryFilter.limit = query.limit;
 		queryFilter.role = query.role && (query.role === 'admin' ? 0 : 1);
+		queryFilter.status =
+			query.status && (query.status === 'blocked' ? true : false);
+
+		return queryFilter;
+	}
+
+	transformAdminsQueryFilter(query: any): AdminsQueryFilter {
+		const queryFilter: UsersQueryFilter = {};
+
+		queryFilter.page = query.page;
+		queryFilter.limit = query.limit;
 		queryFilter.status =
 			query.status && (query.status === 'blocked' ? true : false);
 

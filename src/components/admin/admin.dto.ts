@@ -10,6 +10,8 @@ export type UsersQueryFilter = {
 
 export type ClassesQueryFilter = {} & QueryFilter;
 
+export type AdminsQueryFilter = { status?: boolean } & QueryFilter;
+
 export type UserOverviewDto = {
 	id: number;
 	fullName: string;
