@@ -45,3 +45,14 @@ export const findReviewById =async (id: number) => {
 
 	return review;
 }
+
+export const findReviewByStudentIdAndAssignmentId = async (studentId: string, assignId: number) =>{
+	const review = await Review.findOne({
+		where:{
+			studentId: studentId,
+			assignmentId: assignId
+		}
+	})
+
+	return review;
+}

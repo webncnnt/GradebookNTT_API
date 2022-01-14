@@ -9,7 +9,7 @@ import {
 	findFullNameByStudentId,
 	findUserByStudentId
 } from './../../auth/users.model';
-import { addReview } from './reviewer.model';
+import { addReview, findReviewByStudentIdAndAssignmentId } from './reviewer.model';
 import { createReview } from './review.controller';
 import { gradeDetail } from './review.controller';
 import express from 'express';
@@ -42,9 +42,8 @@ reviewer.post('/requestReview', async (req, res) => {
 	const result = await addReview(studentId, assignmentId, expectedScore, message);
 	    if(result == false)  res.status(400).json({message: `StudentGrade doesn't exist`});
 	    else{
-	        res.status(200).json({
-	            message: 'Request review successfully'
-	        });
+            const review = await findReviewByStudentIdAndAssignmentId(studentId, assignmentId)
+	        res.status(200).json(review);
 
             //send notification
             //condition: class gradeAssignment must have classId != null
