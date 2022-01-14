@@ -11,6 +11,7 @@ import studentRouter from './components/students/student.route';
 import reviewer from './components/reviewer/reviewer.route';
 import commentRouter from './components/comment/comment.route';
 import reviewRouter from './components/review/review.route';
+import NotificationRouter from './components/notification/notification.route';
 
 import classesRouter from '@components/classes';
 import classInvitationRouter from '@components/classInvitation';
@@ -61,6 +62,7 @@ app.use('/api/students', studentRouter);
 app.use('/api/reviewer', reviewer)
 app.use('/api/comment', commentRouter);
 app.use('/api/review', reviewRouter);
+app.use('/notification', NotificationRouter);
 
 //test about  validation of access token
 // app.use('/api/profile', isAuth, async (req: any, res) => {
