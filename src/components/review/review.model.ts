@@ -1,3 +1,5 @@
+import { findStudentByStudentId } from './../students/student.model';
+import { findFullNameByStudentId } from './../../auth/users.model';
 import { Review } from "@src/models/Review";
 import db from "@src/db";
 
@@ -19,16 +21,17 @@ export const getAllOfReviews = async (classId: number)=>{
 // current grade, student expectation grade, student explanation
 export const gradeReviewDetail = async (reviewId: number) =>{
 
-    const strQuery = `select RV.id as reviewId, RV."studentId", RV."statusTeacher", RV."statusStudent", 
+    const strQuery = `select RV.id as reviewId, RV."studentId", S."fullName", RV."statusTeacher", RV."statusStudent", 
     SG."score" as currentScore, RV."expectedScore", RV."message", GA."title", GA."score" as scaleGrade 
-    from "review" as RV, "gradeAssignments" as GA, "StudentGrades" as SG 
+    from "review" as RV, "gradeAssignments" as GA, "StudentGrades" as SG, "Students" as S 
     where RV.id = ${reviewId} and RV."assignmentId" = GA."id" and RV."studentId" = SG."studentId" 
-    and RV."assignmentId" = SG."gradeAssignmentId"`
+    and RV."assignmentId" = SG."gradeAssignmentId" and S."studentId" = RV."studentId"`
 
     const result:any = await db.query(strQuery);
 
     if(result == null || result.length == 0)   return result;
     
+   // const studentName = findStudentByStudentId()
     return result[0];
 }
 
