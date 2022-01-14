@@ -71,19 +71,15 @@ reviewer.post('/requestReview', async (req, res) => {
                         }
 
                     } else {
-                        res.status(400).json({
-                            message: "classId or ownerId of class doesn't exist !!"
-                        });
+                        console.log("classId or ownerId of class doesn't exist !!");
+                        
                     }
                 } else {
-                    res.status(400).json({
-                        message: "AssignmentId doesn't exist!!"
-                    });
+                   console.log( "AssignmentId doesn't exist!!");
+                   
                 }
             } else {
-                res.status(400).json({
-                    message: "User hasn't mapped mssv!!"
-                });
+                console.log("User hasn't mapped mssv!!");
             }
         }
 

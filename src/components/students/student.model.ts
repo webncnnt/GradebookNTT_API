@@ -74,3 +74,13 @@ export const findStudentByStudentId = async (studentId: string) => {
 
 	return student;
 };
+
+export const findStudentByUserId = async(userId: number) =>{
+	const user = await Student.findOne({
+		where: {
+			userId: userId
+		}
+	})
+
+	return user;
+}

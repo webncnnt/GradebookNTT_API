@@ -82,9 +82,8 @@ reviewRouter.post('/markFinalReview/:reviewId',async (req, res) =>{
 
                 }
                 else{
-                    res.status(400).json({
-                        message: "User hasn't mapped mssv or assigmentId doesn't exist in gradAssignment table!!"
-                    });
+                   console.log("User hasn't mapped mssv or assigmentId doesn't exist in gradAssignment table!!");
+                   
                 }
                 
             }

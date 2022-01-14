@@ -62,7 +62,7 @@ app.use('/api/students', studentRouter);
 app.use('/api/reviewer', reviewer)
 app.use('/api/comment', commentRouter);
 app.use('/api/review', reviewRouter);
-app.use('api/notification', NotificationRouter);
+app.use('/api/notification', NotificationRouter);
 
 //test about  validation of access token
 // app.use('/api/profile', isAuth, async (req: any, res) => {
