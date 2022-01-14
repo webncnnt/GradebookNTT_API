@@ -54,3 +54,12 @@ export const findOwnerOfClassId = async (classId: number) => {
 	return owner.dataValues.ownerId;
 };
 
+export const findAllNotify = async (userId: number) =>{
+	const notitication = await Notification.findAll({
+		where: {
+			receiverId: userId
+		}
+	})
+
+	return notitication;
+}
