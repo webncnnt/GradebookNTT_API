@@ -12,7 +12,7 @@ export const markFinalReview = async (reviewId: number, finalScore: number, stat
       
        statusTeacher = statusTeacher.toUpperCase();
        
-       if(statusTeacher.localeCompare("ACCEPTED") != 0 && statusTeacher.localeCompare("REJECTED") != 0) return false;
+       if(statusTeacher.localeCompare("APPROVED") != 0 && statusTeacher.localeCompare("REJECTED") != 0) return false;
 
        else{
         await updateGradeStudent(studentId, finalScore, assignmentId);
