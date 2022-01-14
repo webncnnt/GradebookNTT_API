@@ -17,8 +17,7 @@ commentRouter.post('/addComment', async (req, res) => {
 	const message: string = req.body.message;
 	const commenterId: number = req.body.commenterId;
 
-	// const result = await addComment(reviewId, message, commenterId);
-    const result = true;
+	const result = await addComment(reviewId, message, commenterId);
 	if (!result)
 		res.status(400).json({
 			message: `reviewId or commenterId doesn't exist!`
