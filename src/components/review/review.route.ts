@@ -1,6 +1,10 @@
+import { findAssignmentById } from './../students/student.model';
+import { findUserByStudentId } from './../../auth/users.model';
+import { findReviewById } from './../reviewer/reviewer.model';
 import { markFinalReview } from './review.controller';
 import { getAllOfReviews, gradeReviewDetail } from './review.model';
 import express from 'express';
+import { createNotification } from '../notification/notification.model';
 const reviewRouter = express.Router();
 
 //get all of reviews of a class
@@ -41,13 +45,17 @@ reviewRouter.get('/gradeReviewDetail/:reviewId', (req, res) =>{
 })
 
 //Mark the final decision for a student review with an updated grade
-reviewRouter.post('/markFinalReview/:reviewId', (req, res) =>{
+reviewRouter.post('/markFinalReview/:reviewId',async (req, res) =>{
 
     const reviewId: number =parseInt(req.params.reviewId);
+    const userId: number = req.body.userId; //recieverId
     const finalScore: number = req.body.finalScore;
     const statusTeacher: string = req.body.statusTeacher  //'NEW' | 'REJECTED' | 'APPROVED';
 
-    markFinalReview(reviewId, finalScore, statusTeacher).then((result) => {
+    const review = await findReviewById(reviewId);
+
+    const result = await markFinalReview(reviewId, finalScore, statusTeacher);
+
         if(result == false){
 
             res.status(400).json({
@@ -59,14 +67,31 @@ reviewRouter.post('/markFinalReview/:reviewId', (req, res) =>{
 
             res.status(200).json({
                 message: 'successfully.'
-            })
+            });
+            const studentId = review?.studentId;
+            const assignmentId = review?.assignmentId;
+            if(studentId != undefined && assignmentId != undefined){
+                const user = await findUserByStudentId(studentId);
+                const assign: any = await findAssignmentById(assignmentId);
+              
+                if(user != null && user != undefined && assign != null && assign != undefined){
+                    const receiverId = user.id;
+                    const title = assign.title;
+                    const noftifyMessage = `teacher created a final decision with assignment: ${title}.`;
+                    await createNotification(noftifyMessage, userId, receiverId);
+
+                }
+                else{
+                    res.status(400).json({
+                        message: "User hasn't mapped mssv or assigmentId doesn't exist in gradAssignment table!!"
+                    });
+                }
+                
+            }
+           
+
         }
-    }).catch((err) => {
-        
-        res.status(500).json({
-            message: 'internal error server!!'
-        })
-    });
+   
     
 
 })

@@ -50,10 +50,10 @@ reviewer.post('/requestReview', async (req, res) => {
             //condition: class gradeAssignment must have classId != null
             //class Class must have ownerId != null
             const user: any = await findUserByStudentId(studentId);
-            if (user != null || user != undefined) {
+            if (user != null && user != undefined) {
                 const fullname = user.fullname;
                 const assign = await findAssignmentById(assignmentId);
-                if (assign != null || assign != undefined) {
+                if (assign != null && assign != undefined) {
                     const title = assign?.title;
                     const notifyMessage = `${user.fullname} requested review grade with assignment: ${title}.`;
         
@@ -62,7 +62,7 @@ reviewer.post('/requestReview', async (req, res) => {
                     const Ids: any = await findIdTeachersByClassId(classId);
                     const ownerId: any = await findOwnerOfClassId(classId);
         
-                    if (ownerId != null || ownerId != undefined) {
+                    if (ownerId != null && ownerId != undefined) {
                         Ids.push(ownerId);
                         console.log(Ids);
 
