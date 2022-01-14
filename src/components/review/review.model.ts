@@ -23,7 +23,7 @@ export const gradeReviewDetail = async (reviewId: number) =>{
     SG."score" as currentScore, RV."expectedScore", RV."message", GA."title", GA."score" as scaleGrade 
     from "review" as RV, "gradeAssignments" as GA, "StudentGrades" as SG 
     where RV.id = ${reviewId} and RV."assignmentId" = GA."id" and RV."studentId" = SG."studentId" 
-    and RV."assignmentId" = SG."id"`
+    and RV."assignmentId" = SG."gradeAssignmentId"`
 
     const result:any = await db.query(strQuery);
 
