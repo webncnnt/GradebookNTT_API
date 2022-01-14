@@ -36,6 +36,8 @@ profileRouter.put('/:id', (req, res, next) => {
 			}
 		})
 		.catch(err => {
+			console.log(err);
+			
 			res.status(400).json({
 				message: 'Bad request.'
 			});
