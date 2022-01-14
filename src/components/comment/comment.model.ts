@@ -13,10 +13,10 @@ export const createComment = async (reviewId: number, message: string, commenter
 
 export const getAllCommentByReviewId = async (reviewId: number) =>{
 
-    const strQuery = `select RV."message", U."fullname" as commenterName from "commentReview" as RV, "Users" as U
+    const strQuery = `select RV."message", U."fullname" as commenterName, U."avatar" from "commentReview" as RV, "Users" as U
                         where RV."commenterId" = U.id and RV."reviewId" = ${reviewId}`;
 
     const result = await db.query(strQuery)
 
-    return result;
+    return result[0];
 }
