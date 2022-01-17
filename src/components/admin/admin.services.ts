@@ -1,6 +1,7 @@
 import { Class } from '@src/models/Class';
 import { User } from '@src/models/User';
 import { IllegalArgumentError, NotFoundError } from '@src/utils/appError';
+import { Op, Order } from 'sequelize';
 import { ClassesChecker } from '../classes/classes.checker';
 import { ClassesCreator } from '../classes/classes.creator';
 import { ClassDetailDto, ClassOverviewDto } from '../classes/classes.dto';
@@ -50,15 +51,41 @@ export class AdminServices {
 			page = 1,
 			limit = 10,
 			role = null,
-			status = null
+			status = null,
+			email,
+			name,
+			order,
+			sortBy
 		} = queryFilter;
 
+		console.log(queryFilter);
+
 		const whereObj: any = {};
-		role && (whereObj.role = role);
-		status && (whereObj.status = status);
+
+		if (role) whereObj.role = role;
+		if (status) whereObj.status = status;
+		if (email)
+			whereObj.email = { [Op.like]: `%${email.toLowerCase().trim()}%` };
+		if (name)
+			whereObj.fullname = { [Op.like]: `%${name.toLowerCase().trim()}%` };
+
+		const sortObj: Order = [];
+		const columnNames = {
+			id: 'id',
+			fullname: 'fullname',
+			email: 'email',
+			role: 'role',
+			status: 'status',
+			createdat: 'createdAt'
+		};
+
+		// @ts-ignore
+		const normalizeSortBy = columnNames[sortBy?.toLowerCase()];
+		if (order && normalizeSortBy) sortObj.push([normalizeSortBy, order]);
 
 		const users = await this.userRepository.findAll({
 			where: whereObj,
+			order: sortObj,
 			offset: (page - 1) * limit,
 			limit
 		});
@@ -111,9 +138,32 @@ export class AdminServices {
 	async findAndCountAllClasses(
 		queryFilter: ClassesQueryFilter
 	): Promise<[ClassOverviewDto[], number]> {
-		const { page = 1, limit = 10 } = queryFilter;
+		const { page = 1, limit = 10, name, order, sortBy } = queryFilter;
+
+		const whereObj: any = {};
+
+		if (name)
+			whereObj.clsName = { [Op.like]: `%${name.toLowerCase().trim()}%` };
+
+		const sortObj: Order = [];
+
+		const columnNames = {
+			id: 'id',
+			classname: 'clsName',
+			ownerid: 'ownerId',
+			invitecode: 'inviteCode',
+			status: 'status',
+			createdat: 'createdAt',
+			expiredtime: 'expiredTime'
+		};
+
+		// @ts-ignore
+		const normalizeSortBy = columnNames[sortBy?.toLowerCase()];
+		if (order && normalizeSortBy) sortObj.push([normalizeSortBy, order]);
 
 		const classes = await this.classRepository.findAll({
+			where: whereObj,
+			order: sortObj,
 			offset: (page - 1) * limit,
 			limit
 		});

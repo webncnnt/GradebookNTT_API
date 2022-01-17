@@ -33,13 +33,15 @@ app.use(
 			'https://gallant-mcclintock-c1632a.netlify.app',
 			'https://optimistic-ptolemy-22e552.netlify.app/'
 		],
-		credentials: true
+		credentials: true,
+		exposedHeaders: ['x-total-count']
 	})
 );
 
 app.use((req: Request, res: Response, next: NextFunction) => {
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
+	res.header('Access-Control-Expose-Headers', 'x-total-count');
 	next();
 });
 

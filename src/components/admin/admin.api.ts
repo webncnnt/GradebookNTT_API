@@ -29,6 +29,8 @@ router
 router.get('/classes/:id', adminController.getClassById);
 router.get('/classes', adminController.getAllClasses);
 
+router.route('/users/block').delete(adminController.blockUser);
+
 router
 	.route('/users/:id')
 	.delete(adminController.blockUser)

@@ -10,7 +10,7 @@ export const mapUserToUserOverviewDto = (user: User): UserOverviewDto => {
 		studentId: user.studentId || undefined,
 		avatar: user.avatar || undefined,
 		status: user.status === true ? 'blocked' : 'active',
-		createdAt: user.createAt
+		createdAt: user.createdAt
 	};
 };
 
@@ -27,6 +27,6 @@ export const mapUserToUserDto = (user: User): UserDto => {
 		numberPhone: user.numberPhone || undefined,
 		facebook: user.facebook || undefined,
 		dob: user.dob || undefined,
-		createdAt: user.createAt
+		createdAt: user.createdAt
 	};
 };

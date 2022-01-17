@@ -47,7 +47,7 @@ export type ClassDetailDto = {
 	description?: string;
 	inviteCode: string;
 	coverImage?: string;
-	createDate: Date;
+	createdAt: Date;
 	expiredTime?: Date;
 	totalMembers: number;
 	numberOfStudents: number;

@@ -1,14 +1,20 @@
 type QueryFilter = {
 	page?: number;
 	limit?: number;
+	order?: 'asc' | 'desc';
+	sortBy?: string;
 };
 
 export type UsersQueryFilter = {
+	email?: string;
+	name?: string;
 	role?: number;
 	status?: boolean;
 } & QueryFilter;
 
-export type ClassesQueryFilter = {} & QueryFilter;
+export type ClassesQueryFilter = {
+	name?: string;
+} & QueryFilter;
 
 export type AdminsQueryFilter = { status?: boolean } & QueryFilter;
 
@@ -43,4 +49,8 @@ export type CreateAdminInput = {
 	email: string;
 	password: string;
 	passwordConfirmation: string;
+};
+
+export type UpdateStudentIdInput = {
+	studentId?: string;
 };

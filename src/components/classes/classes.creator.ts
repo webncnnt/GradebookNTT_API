@@ -61,7 +61,7 @@ export class ClassesCreator {
 			id: clazz!.id,
 			className: clazz!.clsName,
 			ownerId: clazz!.ownerId,
-			createDate: clazz!.createdAt,
+			createdAt: clazz!.createdAt,
 			inviteCode: clazz!.inviteCode,
 			coverImage: clazz!.coverImage || undefined,
 			description: clazz!.description || undefined,

@@ -107,6 +107,18 @@ export class AdminController {
 		}
 	);
 
+	blockUsers = catchAsyncRequestHandler(
+		async (req: Request, res: Response, next: NextFunction) => {
+			const id = req.query.id;
+
+			// await this.adminServices.blockUserById(id);
+
+			res.status(HttpStatusCode.OK).json({
+				status: 'success'
+			});
+		}
+	);
+
 	getAllAdmins = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
 			const queryFilter = this.transformAdminsQueryFilter(req.query);
@@ -136,13 +148,17 @@ export class AdminController {
 	);
 
 	transformUsersQueryFilter(query: any): UsersQueryFilter {
-		const queryFilter: UsersQueryFilter = {};
+		const queryFilter = query as UsersQueryFilter;
+		const { fullname, role, status } = query;
 
-		queryFilter.page = query.page;
-		queryFilter.limit = query.limit;
-		queryFilter.role = query.role && (query.role === 'admin' ? 0 : 1);
-		queryFilter.status =
-			query.status && (query.status === 'blocked' ? true : false);
+		const mapToColumnName = {
+			fullName: 'fullname',
+			email: 'email'
+		};
+
+		if (status) queryFilter.status = status === 'blocked' ? true : false;
+		if (fullname) queryFilter.name = fullname;
+		if (role) queryFilter.role = query.role === 'admin' ? 0 : 1;
 
 		return queryFilter;
 	}
@@ -159,11 +175,7 @@ export class AdminController {
 	}
 
 	transformClassesQueryFilter(query: any): ClassesQueryFilter {
-		const queryFilter: ClassesQueryFilter = {};
-
-		queryFilter.page = query.page;
-		queryFilter.limit = query.limit;
-
+		const queryFilter = query as ClassesQueryFilter;
 		return queryFilter;
 	}
 }
