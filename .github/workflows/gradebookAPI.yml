@@ -45,6 +45,7 @@ jobs:
                   CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
                   SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
                   DOMAIN: ${{ secrets.DOMAIN }}
+                  CLIENT_ID: ${{ secrets.CLIENT_ID }}
 
               run: |
                   heroku config:set NODE_ENV="$NODE_ENV" -a "$HEROKU_APP_NAME"
@@ -60,6 +61,7 @@ jobs:
                   heroku config:set CLOUDINARY_API_SECRET="$CLOUDINARY_API_SECRET" -a "$HEROKU_APP_NAME"
                   heroku config:set SENDGRID_API_KEY="$SENDGRID_API_KEY" -a "$HEROKU_APP_NAME"
                   heroku config:set DOMAIN="$DOMAIN" -a "$HEROKU_APP_NAME"
+                  heroku config:set CLIENT_ID="$CLIENT_ID" -a "$HEROKU_APP_NAME"
 
             - name: Deploy to heroku
               run: git push -f heroku HEAD:main
