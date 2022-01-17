@@ -31,23 +31,18 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(
 	cors({
-		origin: [
-			'http://localhost:3000',
-			'http://locahost:8000',
-			'https://gallant-mcclintock-c1632a.netlify.app',
-			'https://optimistic-ptolemy-22e552.netlify.app/'
-		],
+		origin: '*',
 		credentials: true,
 		exposedHeaders: ['x-total-count']
 	})
 );
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
-	res.header('Access-Control-Expose-Headers', 'x-total-count');
-	next();
-});
+// app.use((req: Request, res: Response, next: NextFunction) => {
+// 	res.header('Access-Control-Allow-Origin', '*');
+// 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
+// 	res.header('Access-Control-Expose-Headers', 'x-total-count');
+// 	next();
+// });
 
 const API_PREFIX = '/api';
 
@@ -61,7 +56,7 @@ app.use('/api/auth', router);
 app.use('/api/profile', isAuth, profileRouter);
 app.use('/api/email', emailRouter);
 app.use('/api/students', studentRouter);
-app.use('/api/reviewer', reviewer)
+app.use('/api/reviewer', reviewer);
 app.use('/api/comment', commentRouter);
 app.use('/api/review', reviewRouter);
 app.use('/api/notification', NotificationRouter);
