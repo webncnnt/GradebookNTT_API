@@ -75,3 +75,29 @@ export const findUserIdByStudentId = async(studentId: string) =>{
 		return null;
 	return user?.id;
 }
+
+export const findFullNameByStudentId = async (studentid: string) =>{
+	const user:any = await User.findOne({
+		where: {
+			studentId: studentid
+		}
+	})
+
+	if(user != null && user != undefined){
+		return user.fullname;
+	}
+	else{
+		return null;
+	}
+}
+
+
+export const findUserByStudentId = async (studentid: string) =>{
+	const user:any = await User.findOne({
+		where: {
+			studentId: studentid
+		}
+	})
+
+	return user;
+}

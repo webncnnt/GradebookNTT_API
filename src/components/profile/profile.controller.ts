@@ -1,3 +1,5 @@
+import { findStudentByStudentId } from './../students/student.model';
+import { findUserIdByStudentId } from '@src/auth/users.model';
 import {
 	findUserById,
 	findUserByStudentIdAndUserId
@@ -23,7 +25,7 @@ export const updateProfile = async (
 ) => {
 	const user: any = await findUserById(userId);
 
-	if (studentId != null || studentId != "") {
+	if (studentId != null || studentId != "" || studentId != undefined) {
 		const isExist = await findUserByStudentIdAndUserId(userId, studentId);
 
 		if (isExist != null) {
@@ -40,6 +42,16 @@ export const updateProfile = async (
 		facebook: facebook
 	});
 
+	//update student table with userId
+	if(studentId != null || studentId != "" || studentId != undefined){
+		const student: any = await findStudentByStudentId(studentId);
+		if(student != null || student != undefined){
+			student.update({
+				userId: userId
+			})
+		}
+	}
+	
 	return {
 		user: await findUserById(userId)
 	};
