@@ -7,17 +7,17 @@ profileRouter.put('/:id', (req, res, next) => {
 	const userId = req.params.id;
 	const fullname = req.body.fullname;
 	const studentId = req.body.studentId;
-	const dob = req.body.dob.split('/').reverse().join('/');
+	const dob: any = req.body.dob == undefined ? undefined : new Date(req.body.dob.split('/').reverse().join('/'));
 	const address = req.body.address;
 	const numberPhone = req.body.numberPhone;
 	const avatar = req.body.avatar;
 	const facebook = req.body.facebook;
-
+	
 	updateProfile(
 		parseInt(userId),
 		fullname,
 		studentId,
-		new Date(dob),
+		dob,
 		address,
 		numberPhone,
 		avatar,
