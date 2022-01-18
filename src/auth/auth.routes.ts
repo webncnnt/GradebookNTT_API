@@ -1,6 +1,6 @@
 import { getUserByToken } from './auth.middleware';
 import { findUserById, createUser } from './users.model';
-import { register, login, changePassWord, resetPassword } from './auth.controllers';
+import { register, login, changePassWord, resetPassword, activateAccount } from './auth.controllers';
 import { config } from '@src/config';
 import express from 'express';
 const router = express.Router();
@@ -136,5 +136,16 @@ router.get('/getUserByToken/:token', (req, res) =>{
 		console.log("error get User by token");
 		
 	});
+})
+
+router.get('/activate/:token', async(req, res)=>{
+	const token = req.params.token;
+	const result = await activateAccount(token);
+	if(result){
+		res.status(200).send(`<h2>Activated account successfully.</h2>`)
+	}
+	else{
+		res.status(400).send('<h2>Error activating account!</h2>')
+	}
 })
 export default router;

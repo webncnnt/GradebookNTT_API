@@ -1,14 +1,18 @@
+import { config } from './../config/index';
 import { sendEmail } from './../components/mailServices/mail.service';
 import {
 	ACCESS_TOKEN_LIFE,
 	ACCESS_TOKEN_SECRET,
-	generateToken
+	decodeToken,
+	generateToken,
+	verifyToken
 } from './auth.method';
 import { findByEmail, findUserById } from './users.model';
 import { createUser } from './users.model';
 
 import bcrypt from 'bcrypt';
 const randomstring = require('randomstring');
+const jwt = require('jsonwebtoken');
 
 const SALT_ROUNDS = 10;
 
@@ -20,8 +24,23 @@ export const register = async (
 	const user = await findByEmail(email);
 
 	if (user == null) {
-		const hashPassword = bcrypt.hashSync(password, SALT_ROUNDS);
-		await createUser(fullname, email, hashPassword);
+		const token = jwt.sign(
+			{ fullname, email, password },
+			ACCESS_TOKEN_SECRET,
+			{ expiresIn: '2m' }
+		);
+		const msg = {
+			to: email,
+			from: { email: 'huynhthinhi206@gmail.com' },
+			subject: `Account activation Link`,
+			html: `
+			<h2>Please click on given link to activate you account</h2>
+			<a href = '${config.DOMAIN}/api/auth/activate/${token}'>Click at here to activate account</a>`
+		};
+
+		await sendEmail(msg);
+		// const hashPassword = bcrypt.hashSync(password, SALT_ROUNDS);
+		// await createUser(fullname, email, hashPassword);
 
 		return true;
 	} else {
@@ -122,5 +141,29 @@ export const resetPassword = async (email: string) => {
 
 		await sendEmail(msg);
 		return true;
+	}
+};
+
+export const activateAccount = async (token: string) => {
+	const verify = verifyToken(token, ACCESS_TOKEN_SECRET);
+	
+	if (verify != null && verify != undefined) {
+		const user: any = await decodeToken(token, ACCESS_TOKEN_SECRET);
+		
+		if (user == null || user == undefined) return false;
+		else {
+			const isExistEmail = await findByEmail(user.email);
+			if (isExistEmail) return false;
+			else {
+				const hashPassword = bcrypt.hashSync(
+					user.password,
+					SALT_ROUNDS
+				);
+				await createUser(user.fullname, user.email, hashPassword);
+				return true;
+			}
+		}
+	} else {
+		return false;
 	}
 };
