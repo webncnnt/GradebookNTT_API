@@ -108,7 +108,7 @@ export const resetPassword = async (email: string) => {
 		});
 		const msg = {
 			to: email,
-			from: { email: 'huynhthinhi206@gmail.com' },
+			from: { email: 'classroom@gradebook.codes' },
 			subject: `Password Reset`,
 			html: `
 			<h3>You are receiving this because you (or someone else) have requested the reset of the password for your account.</h3>
