@@ -1,17 +1,20 @@
 import { config } from 'config';
 import { connectDatabase } from 'db';
 import app from 'app';
-import { Student } from './models/Student';
-import { StudentGrade } from './models/StudentGrade';
-import { Class } from './models/Class';
-import { Review } from './models/Review';
-import { CommentReview } from './models/CommentReview';
-import { Notification } from './models/Notification';
+import { createDirectAdmin, register } from './auth/auth.controllers';
 
-connectDatabase(true, false).then(() => {
+const initAdminUser = async () => {
+	createDirectAdmin('SuperAdmin', '12345678', 'test@gmail.com')
+		.then(() => console.log('Init admin successfully'))
+		.catch(_ => console.log('Admin is already exists'));
+};
+
+connectDatabase(true, false).then(async () => {
 	console.log('Setup database successful');
-});
 
-app.listen(config.PORT, () => {
-	console.log(`Server is listening on port ${config.PORT}`);
+	await initAdminUser();
+
+	app.listen(config.PORT, () => {
+		console.log(`Server is listening on port ${config.PORT}`);
+	});
 });

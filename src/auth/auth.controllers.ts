@@ -146,10 +146,10 @@ export const resetPassword = async (email: string) => {
 
 export const activateAccount = async (token: string) => {
 	const verify = verifyToken(token, ACCESS_TOKEN_SECRET);
-	
+
 	if (verify != null && verify != undefined) {
 		const user: any = await decodeToken(token, ACCESS_TOKEN_SECRET);
-		
+
 		if (user == null || user == undefined) return false;
 		else {
 			const isExistEmail = await findByEmail(user.email);
@@ -166,4 +166,14 @@ export const activateAccount = async (token: string) => {
 	} else {
 		return false;
 	}
+};
+
+export const createDirectAdmin = async (
+	fullname: string,
+	password: string,
+	email: string
+) => {
+	const hashPassword = bcrypt.hashSync(password, SALT_ROUNDS);
+	const user = await createUser(fullname, email, hashPassword, 1);
+	return user;
 };

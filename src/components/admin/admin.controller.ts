@@ -158,8 +158,9 @@ export class AdminController {
 
 		if (status) queryFilter.status = status === 'blocked' ? true : false;
 		if (fullname) queryFilter.name = fullname;
-		if (role) queryFilter.role = query.role === 'admin' ? 0 : 1;
+		if (role) queryFilter.role = query.role === 'admin' ? 1 : 0;
 
+		console.log('query', queryFilter);
 		return queryFilter;
 	}
 

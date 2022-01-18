@@ -1,3 +1,4 @@
+import { createDirectAdmin, register } from '@src/auth/auth.controllers';
 import { Class } from '@src/models/Class';
 import { User } from '@src/models/User';
 import { IllegalArgumentError, NotFoundError } from '@src/utils/appError';
@@ -24,8 +25,6 @@ export class AdminServices {
 
 	// Admin
 	async createAdmin(createInput: CreateAdminInput): Promise<UserOverviewDto> {
-		console.log(createInput);
-
 		if (createInput.password !== createInput.passwordConfirmation) {
 			throw new IllegalArgumentError('Password confirmation must match');
 		}
@@ -34,13 +33,16 @@ export class AdminServices {
 			where: { email: createInput.email }
 		});
 
-		console.log(existsUser);
 		if (existsUser) throw new IllegalArgumentError('Email already exists');
 
-		const adminUser = { ...createInput, role: 0 };
-		const user = await this.userRepository.create(adminUser);
+		const adminUser = { ...createInput, role: 1 };
+		const user = await createDirectAdmin(
+			adminUser.fullName,
+			adminUser.password,
+			adminUser.email
+		);
 
-		return mapUserToUserOverviewDto(user);
+		return mapUserToUserOverviewDto(user!);
 	}
 
 	// Users
@@ -58,8 +60,6 @@ export class AdminServices {
 			sortBy
 		} = queryFilter;
 
-		console.log(queryFilter);
-
 		const whereObj: any = {};
 
 		if (role) whereObj.role = role;
@@ -69,6 +69,7 @@ export class AdminServices {
 		if (name)
 			whereObj.fullname = { [Op.like]: `%${name.toLowerCase().trim()}%` };
 
+		console.log(whereObj);
 		const sortObj: Order = [];
 		const columnNames = {
 			id: 'id',

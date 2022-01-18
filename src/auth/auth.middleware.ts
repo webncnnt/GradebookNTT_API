@@ -33,7 +33,7 @@ export const isAuth = async (req: Request, res: any, next: any) => {
 		}
 
 		const user = (await findByEmail(verified.payload.email)) as User;
-		const role = user.role === 0 ? 'admin' : 'user';
+		const role = user.role === 0 ? 'user' : 'admin';
 
 		req.user = {
 			email: user.email,
@@ -54,7 +54,7 @@ export const isAuth = async (req: Request, res: any, next: any) => {
 			});
 		}
 		const user = (await findByEmail(verified.payload.email)) as User;
-		const role = user.role === 0 ? 'admin' : 'user';
+		const role = user.role === 0 ? 'user' : 'admin';
 
 		req.user = {
 			email: user.email,

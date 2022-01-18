@@ -37,13 +37,6 @@ app.use(
 	})
 );
 
-// app.use((req: Request, res: Response, next: NextFunction) => {
-// 	res.header('Access-Control-Allow-Origin', '*');
-// 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
-// 	res.header('Access-Control-Expose-Headers', 'x-total-count');
-// 	next();
-// });
-
 const API_PREFIX = '/api';
 
 app.use(`${API_PREFIX}/classes`, classesRouter);

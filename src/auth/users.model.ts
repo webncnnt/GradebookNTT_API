@@ -8,9 +8,9 @@ const Op = sequelize.Op;
 export const findByEmail = async (email: string) => {
 	const user = User.findOne({
 		where: {
-			email : email
+			email: email
 		}
-	})
+	});
 	// const strQuery = `select * from "Users" where email = '${email}'`;
 	// const result = await database.query(strQuery);
 
@@ -21,20 +21,20 @@ export const findByEmail = async (email: string) => {
 export const createUser = async (
 	fullname: string,
 	email: string,
-	password: string
+	password: string,
+	role?: number
 ) => {
-
 	const user = await findByEmail(email);
-	if(user == null){
+	if (user == null) {
 		await User.create({
 			fullname: fullname,
 			email: email,
 			password: password,
-			role: 0,
+			role: role ? role : 0,
 			status: false
 		});
 	}
-	
+
 	return await findByEmail(email);
 };
 
@@ -61,43 +61,39 @@ export const findUserByStudentIdAndUserId = async (
 		}
 	});
 
-	
 	return user;
 };
 
-export const findUserIdByStudentId = async(studentId: string) =>{
+export const findUserIdByStudentId = async (studentId: string) => {
 	const user = await User.findOne({
 		where: {
 			studentId: studentId
 		}
 	});
-	if(user == null || user == undefined)
-		return null;
+	if (user == null || user == undefined) return null;
 	return user?.id;
-}
+};
 
-export const findFullNameByStudentId = async (studentid: string) =>{
-	const user:any = await User.findOne({
+export const findFullNameByStudentId = async (studentid: string) => {
+	const user: any = await User.findOne({
 		where: {
 			studentId: studentid
 		}
-	})
+	});
 
-	if(user != null && user != undefined){
+	if (user != null && user != undefined) {
 		return user.fullname;
-	}
-	else{
+	} else {
 		return null;
 	}
-}
+};
 
-
-export const findUserByStudentId = async (studentid: string) =>{
-	const user:any = await User.findOne({
+export const findUserByStudentId = async (studentid: string) => {
+	const user: any = await User.findOne({
 		where: {
 			studentId: studentid
 		}
-	})
+	});
 
 	return user;
-}
+};
