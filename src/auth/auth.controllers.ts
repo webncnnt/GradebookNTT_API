@@ -31,7 +31,7 @@ export const register = async (
 		);
 		const msg = {
 			to: email,
-			from: { email: 'huynhthinhi206@gmail.com' },
+			from: { email: 'classroom@gradebook.codes' },
 			subject: `Account activation Link`,
 			html: `
 			<h2>Please click on given link to activate you account</h2>
