@@ -17,27 +17,53 @@ import {
 } from './student.model';
 import { sendEmail } from '../mailServices/mail.service';
 import { config } from '@src/config';
+import { Student } from '@src/models/Student';
 
 export interface IHash {
 	[details: number]: string;
 }
+
 export const uploadStudent = async (students: any, classId: number) => {
-	await deleteDataStudent();
+	//await deleteDataStudent();
+	const studentList = await findStudentsByClassId(classId);
 	let hashMap: IHash = {};
 
-	for (var i = 0; i < students.length; i++) {
-		const userId: any = await findUserIdByStudentId(students[i].studentId);
-		if (userId != null && hashMap[userId] == null) {
-			hashMap[userId] = students[i].studentId;
+	const func = async()=>{
+		for (var i = 0; i < students.length; i++) {
+		
+			if(studentList.length != 0){
+				for(var j = 0; j < studentList.length; j++){
+					
+					if( students[i].studentId != studentList[j].studentId){
+						const userId: any = await findUserIdByStudentId(students[i].studentId);
+						await saveStudent(
+							students[i].studentId,
+							students[i].studentName,
+							userId,
+							classId
+						);
+					}
+				}
+			}
+			else{
+				const userId: any = await findUserIdByStudentId(students[i].studentId);
+						await saveStudent(
+							students[i].studentId,
+							students[i].studentName,
+							userId,
+							classId
+						);
+			}
+			
 		}
-		await saveStudent(
-			students[i].studentId,
-			students[i].studentName,
-			userId,
-			classId
-		);
+
 	}
+	
+	await func();
+	
 	const result = await findStudentsByClassId(classId);
+	console.log(result);
+	
 	return result;
 	//return hashMap;
 };
