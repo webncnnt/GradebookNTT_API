@@ -37,7 +37,9 @@ export const uploadStudent = async (students: any, classId: number) => {
 			classId
 		);
 	}
-	return hashMap;
+	const result = await findStudentsByClassId(classId);
+	return result;
+	//return hashMap;
 };
 
 export const inputGrade = async (

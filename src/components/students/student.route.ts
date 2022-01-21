@@ -19,7 +19,7 @@ studentRouter.post('/uploadStudents', (req, res, next) => {
 		.then(result => {
 			res.status(200).json({
 				message: 'Upload successfully.',
-				mappedStudents: result
+				Students: result
 			});
 		})
 		.catch(err => {
