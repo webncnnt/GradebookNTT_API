@@ -1,3 +1,4 @@
+import { findStudentsByClassId } from './student.model';
 import {
 	uploadStudent,
 	inputGrade,
@@ -11,25 +12,14 @@ import { ResponseError } from '@sendgrid/mail';
 
 const studentRouter = express.Router();
 
-studentRouter.post('/uploadStudents', (req, res, next) => {
+studentRouter.post('/uploadStudents', async(req, res, next) => {
 	const students = req.body.students;
 	const classId = req.body.classId;
-
-	uploadStudent(students, classId)
-		.then(result => {
-			res.status(200).json({
-				message: 'Upload successfully.',
-				Students: result
-			});
-		})
-		.catch(err => {
-			console.log('Upload students not successfully!');
-			console.log(err);
-
-			res.status(400).json({
-				message: 'Bad request.'
-			});
-		});
+	
+	const result = await uploadStudent(students, classId);
+//	const result = await findStudentsByClassId(classId);
+	res.status(200).json(result);
+	
 });
 
 studentRouter.post('/inputGrade', (req, res, next) => {

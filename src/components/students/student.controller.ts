@@ -24,50 +24,67 @@ export interface IHash {
 }
 
 export const uploadStudent = async (students: any, classId: number) => {
-	//await deleteDataStudent();
-	const studentList = await findStudentsByClassId(classId);
-	let hashMap: IHash = {};
 
-	const func = async()=>{
-		for (var i = 0; i < students.length; i++) {
+	const filteredList: any = await filterStudent(students);
+	console.log(filteredList);
+	
+	await saveStudentList(filteredList, classId);
+	await sleep(200)
+	
+	// const func = async()=>{
+	// 	for (let i = 0; i < students.length; i++) {
 		
-			if(studentList.length != 0){
-				for(var j = 0; j < studentList.length; j++){
-					
-					if( students[i].studentId != studentList[j].studentId){
-						const userId: any = await findUserIdByStudentId(students[i].studentId);
-						await saveStudent(
-							students[i].studentId,
-							students[i].studentName,
-							userId,
-							classId
-						);
-					}
-				}
-			}
-			else{
-				const userId: any = await findUserIdByStudentId(students[i].studentId);
-						await saveStudent(
-							students[i].studentId,
-							students[i].studentName,
-							userId,
-							classId
-						);
-			}
-			
-		}
+	// 		const student = await findStudentByStudentId(students[i].studentId);
+				
+	// 			if(student == null || student == undefined){
+	// 				const userId: any = await findUserIdByStudentId(students[i].studentId);
+	// 				await saveStudent(
+	// 								students[i].studentId,
+	// 								students[i].studentName,
+	// 								userId,
+	// 								classId
+	// 							);
+	// 			}
+	// 	}
+	// }
+	// await func();
+	const result = await findStudentsByClassId(classId);
+	return result;
 
+};
+export const sleep = (ms: number) =>{
+	return new Promise(resolve => setTimeout(resolve, ms));
+  }
+export const saveStudentList = async (students: any, classId: number) =>{
+	for(let i = 0; i< students.length; i++){
+		// const userId: any = await findUserIdByStudentId(students[i].studentId);
+		// await saveStudent(students[i].studentId,
+		// 				students[i].studentName,
+		// 				userId,
+		// 				classId)
+		await saveST(students[i], classId);
 	}
 	
-	await func();
-	
-	const result = await findStudentsByClassId(classId);
-	console.log(result);
-	
-	return result;
-	//return hashMap;
-};
+}
+export const saveST = async(student: any, classId: number) =>{
+	const userId: any = await findUserIdByStudentId(student.studentId);
+		await saveStudent(student.studentId,
+						student.studentName,
+						userId,
+						classId)
+}
+export const filterStudent = async (students: any) =>{
 
+	const studentsList = [];
+	for (let i = 0; i < students.length; i++) {
+		
+		const student = await findStudentByStudentId(students[i].studentId);
+			if(student == null || student == undefined){
+				studentsList.push(students[i]);
+			}
+	}
+	return studentsList;
+}
 export const inputGrade = async (
 	studentId: string,
 	score: number,
