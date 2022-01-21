@@ -84,3 +84,17 @@ export const findStudentByUserId = async(userId: number) =>{
 
 	return user;
 }
+
+export const findStudentByStudentIdAndClassId =async (studentId: number, classId: number) =>{
+
+	const student =await Student.findOne({
+		where:{
+			studentId: studentId,
+			classId: classId
+		}
+	});
+
+	return student;
+
+	
+}

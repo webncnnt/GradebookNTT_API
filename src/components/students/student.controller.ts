@@ -2,7 +2,8 @@ import {
 	deleteDataStudent,
 	findStudentsByClassId,
 	saveStudent,
-	findStudentByStudentId
+	findStudentByStudentId,
+	findStudentByStudentIdAndClassId
 } from './student.model';
 import { findUserIdByStudentId } from '@src/auth/users.model';
 import {
@@ -25,7 +26,7 @@ export interface IHash {
 
 export const uploadStudent = async (students: any, classId: number) => {
 
-	const filteredList: any = await filterStudent(students);
+	const filteredList: any = await filterStudent(students, classId);
 	console.log(filteredList);
 	
 	await saveStudentList(filteredList, classId);
@@ -73,12 +74,12 @@ export const saveST = async(student: any, classId: number) =>{
 						userId,
 						classId)
 }
-export const filterStudent = async (students: any) =>{
+export const filterStudent = async (students: any, classId: number) =>{
 
 	const studentsList = [];
 	for (let i = 0; i < students.length; i++) {
 		
-		const student = await findStudentByStudentId(students[i].studentId);
+		const student = await findStudentByStudentIdAndClassId(students[i].studentId, classId);
 			if(student == null || student == undefined){
 				studentsList.push(students[i]);
 			}
