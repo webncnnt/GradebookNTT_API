@@ -19,4 +19,4 @@ export class ClassesMessageSuccess {
 	static readonly SUCCESS_DELETE_CLASS = 'Class is deleted successfully';
 }
 
-export const USER_CLASS_PER_PAGE = 6;
+export const USER_CLASS_PER_PAGE = 30;
