@@ -151,26 +151,21 @@ export class AdminController {
 		const queryFilter = query as UsersQueryFilter;
 		const { fullname, role, status } = query;
 
-		const mapToColumnName = {
-			fullName: 'fullname',
-			email: 'email'
-		};
-
 		if (status) queryFilter.status = status === 'blocked' ? true : false;
 		if (fullname) queryFilter.name = fullname;
-		if (role) queryFilter.role = query.role === 'admin' ? 1 : 0;
+		query.role = 0;
 
-		console.log('query', queryFilter);
 		return queryFilter;
 	}
 
 	transformAdminsQueryFilter(query: any): AdminsQueryFilter {
-		const queryFilter: UsersQueryFilter = {};
+		const queryFilter = query as UsersQueryFilter;
 
 		queryFilter.page = query.page;
 		queryFilter.limit = query.limit;
 		queryFilter.status =
 			query.status && (query.status === 'blocked' ? true : false);
+		queryFilter.role = 1;
 
 		return queryFilter;
 	}
