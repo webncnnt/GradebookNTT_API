@@ -23,7 +23,7 @@ commentRouter.post('/addComment', async (req, res) => {
 			message: `reviewId or commenterId doesn't exist!`
 		});
 	else {
-		res.status(200).json(result);
+	
 		const review = await findReviewById(reviewId);
 		const studentId = review?.studentId;
 		const assignmentId = review?.assignmentId;
@@ -77,6 +77,7 @@ commentRouter.post('/addComment', async (req, res) => {
 
 			}
 		}
+		res.status(200).json(result);
 	}
 });
 

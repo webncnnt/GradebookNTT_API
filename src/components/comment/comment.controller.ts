@@ -1,6 +1,6 @@
 import { findReviewById } from './../reviewer/reviewer.model';
 import { findUserById } from './../../auth/users.model';
-import { createComment } from './comment.model';
+import { createComment, getAllCommentByReviewId } from './comment.model';
 
 export const addComment = async (
 	reviewId: number,
@@ -17,8 +17,10 @@ export const addComment = async (
     }
 
     await createComment(reviewId, message, commenterId);
-    return {
-        message: 'Successfully'
-    }
+    const comments = await getAllCommentByReviewId(reviewId);
+    return comments;
+    // return {
+    //     message: 'Successfully'
+    // }
 
 };
