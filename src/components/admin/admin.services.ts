@@ -134,9 +134,22 @@ export class AdminServices {
 	}
 
 	async blockUserByIds(userIds: number[]): Promise<UserDto[]> {
-		const blockedUsers = await this.userRepository.bulkCreate(userIds, {
-			updateOnDuplicate: ['id']
+		const users = await this.userRepository.findAll({
+			where: {
+				id: {
+					[Op.in]: userIds
+				}
+			}
 		});
+
+		const blockedUsers = await this.userRepository.bulkCreate(
+			users.map(u => {
+				return { ...u, status: true };
+			}),
+			{
+				updateOnDuplicate: ['id']
+			}
+		);
 
 		return blockedUsers.map(u => mapUserToUserDto(u));
 	}
