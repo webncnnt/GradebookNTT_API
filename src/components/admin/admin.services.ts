@@ -35,11 +35,12 @@ export class AdminServices {
 
 		if (existsUser) throw new IllegalArgumentError('Email already exists');
 
-		const adminUser = { ...createInput, role: 1 };
+		console.log(createInput);
+
 		const user = await createDirectAdmin(
-			adminUser.fullName,
-			adminUser.password,
-			adminUser.email
+			createInput.fullName,
+			createInput.password,
+			createInput.email
 		);
 
 		return mapUserToUserOverviewDto(user!);
@@ -62,14 +63,11 @@ export class AdminServices {
 
 		const whereObj: any = {};
 
-		if (role) whereObj.role = role;
+		if (role !== null) whereObj.role = role;
 		if (status) whereObj.status = status;
-		if (email)
-			whereObj.email = { [Op.like]: `%${email.toLowerCase().trim()}%` };
-		if (name)
-			whereObj.fullname = { [Op.like]: `%${name.toLowerCase().trim()}%` };
+		if (email) whereObj.email = { [Op.like]: `%${email.trim()}%` };
+		if (name) whereObj.fullname = { [Op.like]: `%${name.trim()}%` };
 
-		console.log(whereObj);
 		const sortObj: Order = [];
 		const columnNames = {
 			id: 'id',
@@ -143,8 +141,7 @@ export class AdminServices {
 
 		const whereObj: any = {};
 
-		if (name)
-			whereObj.clsName = { [Op.like]: `%${name.toLowerCase().trim()}%` };
+		if (name) whereObj.clsName = { [Op.like]: `%${name.trim()}%` };
 
 		const sortObj: Order = [];
 

@@ -138,6 +138,9 @@ export class AdminController {
 		async (req: Request, res: Response, next: NextFunction) => {
 			const createInput = req.body as CreateAdminInput;
 
+			if (!createInput)
+				throw new NotFoundError('Invalid create admin input');
+
 			const adminUser = await this.adminServices.createAdmin(createInput);
 
 			res.status(HttpStatusCode.CREATED).json({
@@ -149,7 +152,7 @@ export class AdminController {
 
 	transformUsersQueryFilter(query: any): UsersQueryFilter {
 		const queryFilter = query as UsersQueryFilter;
-		const { fullname, role, status } = query;
+		const { fullname, status } = query;
 
 		if (status) queryFilter.status = status === 'blocked' ? true : false;
 		if (fullname) queryFilter.name = fullname;
