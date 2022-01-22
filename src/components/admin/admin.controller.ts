@@ -110,7 +110,7 @@ export class AdminController {
 
 	blockUsers = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
-			const ids = req.body as number[];
+			const ids = req.body.ids as number[];
 
 			if (!ids) throw new NotFoundError('Invalid ids');
 
@@ -118,7 +118,9 @@ export class AdminController {
 
 			res.status(HttpStatusCode.OK).json({
 				status: 'success',
-				data: users
+				data: {
+					users
+				}
 			});
 		}
 	);

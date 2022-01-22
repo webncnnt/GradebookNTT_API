@@ -9,7 +9,7 @@ const initAdminUser = async () => {
 		.catch(_ => console.log('Admin is already exists'));
 };
 
-connectDatabase(true, false).then(async () => {
+connectDatabase(true, true).then(async () => {
 	console.log('Setup database successful');
 
 	await initAdminUser();
