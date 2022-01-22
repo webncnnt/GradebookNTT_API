@@ -120,7 +120,7 @@ export class AdminServices {
 		return mapUserToUserDto(user);
 	}
 
-	async blockUserById(userId: number): Promise<User> {
+	async blockUserById(userId: number): Promise<UserDto> {
 		const user = await this.userRepository.findByPk(userId);
 
 		if (!user) {
@@ -130,7 +130,15 @@ export class AdminServices {
 		user.status = true;
 		await user.save();
 
-		return user;
+		return mapUserToUserDto(user);
+	}
+
+	async blockUserByIds(userIds: number[]): Promise<UserDto[]> {
+		const blockedUsers = await this.userRepository.bulkCreate(userIds, {
+			updateOnDuplicate: ['id']
+		});
+
+		return blockedUsers.map(u => mapUserToUserDto(u));
 	}
 
 	// Classes

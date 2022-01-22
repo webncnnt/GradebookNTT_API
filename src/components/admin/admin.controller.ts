@@ -1,4 +1,5 @@
 import { HttpStatusCode } from '@src/constant/httpStatusCode';
+import { User } from '@src/models/User';
 import { NotFoundError } from '@src/utils/appError';
 import { catchAsyncRequestHandler } from '@src/utils/catchAsyncRequestHandler';
 import { Request, Response, NextFunction } from 'express';
@@ -109,9 +110,11 @@ export class AdminController {
 
 	blockUsers = catchAsyncRequestHandler(
 		async (req: Request, res: Response, next: NextFunction) => {
-			const id = req.query.id;
+			const ids = req.body.body as number[];
 
-			// await this.adminServices.blockUserById(id);
+			if (!ids) throw new NotFoundError('Invalid ids');
+
+			await this.adminServices.blockUserByIds(ids);
 
 			res.status(HttpStatusCode.OK).json({
 				status: 'success'
