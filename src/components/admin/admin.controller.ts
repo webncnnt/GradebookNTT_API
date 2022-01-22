@@ -114,10 +114,11 @@ export class AdminController {
 
 			if (!ids) throw new NotFoundError('Invalid ids');
 
-			await this.adminServices.blockUserByIds(ids);
+			const users = await this.adminServices.blockUserByIds(ids);
 
 			res.status(HttpStatusCode.OK).json({
-				status: 'success'
+				status: 'success',
+				data: users
 			});
 		}
 	);
